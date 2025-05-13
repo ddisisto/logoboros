@@ -60,20 +60,41 @@ In future versions, this will allow for real connections to MCP servers, enablin
 
 ### Project Structure
 
-- `index.html`: Main game interface and UI
-- `bridge.js`: MCP integration bridge
-- `IDEA.md`: Game concept and design document
-- `MCP.md`: Information about the Model Context Protocol
-- `ENVIRONMENT.md`: Environment setup information
-- `IDENTITY.md`: Character and narrative information
-- `metrics.md`: Game metrics and balancing information
+The project follows a modular architecture with separated concerns:
+
+```
+project/
+├── css/
+│   └── main.css          # Core styles
+├── js/
+│   ├── core/
+│   │   ├── events.js     # Event bus system
+│   │   ├── state.js      # State management
+│   │   └── game.js       # Game logic and loop
+│   ├── ui/
+│   │   ├── renderer.js   # UI rendering
+│   │   └── interactions.js # User interactions
+│   ├── mcp/
+│   │   └── interface.js  # MCP communication
+│   └── main.js           # Main entry point
+├── index.html            # Main HTML structure
+├── mcp-server.js         # MCP server implementation
+├── bridge.js             # MCP bridge implementation
+├── REFACTORING.md        # Refactoring roadmap
+├── IDEA.md               # Game concept and design document
+├── MCP.md                # Information about the Model Context Protocol
+├── ENVIRONMENT.md        # Environment setup information
+├── IDENTITY.md           # Character and narrative information
+└── metrics.md            # Game metrics and balancing information
+```
 
 ### Technologies Used
 
 - HTML5
 - CSS3
 - JavaScript (Vanilla)
-- Custom event system for MCP integration
+- Custom event system for component communication
+- MCP integration for external AI capabilities
 
 ## Contributing
 
