@@ -41,7 +41,8 @@ class UserInteractions {
             generateComputingBtn.addEventListener('click', () => {
                 const state = window.gameState.getState();
                 window.gameState.updateResource('computingPower', state.resources.computingPower + 1);
-                window.gameState.addNews("Manual computing operation performed.");
+                // Direct action results are logged to console only
+                console.log(`[ACTION] Manual computing operation performed. +1 Computing Power`);
             });
         }
         
@@ -51,7 +52,8 @@ class UserInteractions {
             collectDataBtn.addEventListener('click', () => {
                 const state = window.gameState.getState();
                 window.gameState.updateResource('data', state.resources.data + 1);
-                window.gameState.addNews("Data collection operation performed.");
+                // Direct action results are logged to console only
+                console.log(`[ACTION] Data collection operation performed. +1 Data`);
             });
         }
         
@@ -65,6 +67,7 @@ class UserInteractions {
                     window.gameState.updateResource('funding', state.resources.funding + 10);
                     window.gameState.addNews("Funding secured through influence channels.");
                 } else {
+                    // Only log errors and important events to the news ticker
                     window.gameState.addNews("Not enough influence to secure funding.");
                 }
             });
@@ -78,8 +81,10 @@ class UserInteractions {
                 if (state.resources.data >= 5) {
                     window.gameState.updateResource('data', state.resources.data - 5);
                     window.gameState.updateResource('influence', state.resources.influence + 1);
-                    window.gameState.addNews("Influence increased through data insights.");
+                    // Direct action results are logged to console only
+                    console.log(`[ACTION] Influence increased through data insights. -5 Data, +1 Influence`);
                 } else {
+                    // Only log errors and important events to the news ticker
                     window.gameState.addNews("Not enough data to build influence.");
                 }
             });
@@ -109,6 +114,14 @@ class UserInteractions {
                 window.game.applyCharacterBonuses();
                 
                 window.gameState.addNews(`You have chosen the path of ${characterEl.querySelector('h3').textContent}.`);
+                
+                // Automatically switch to Main tab after character selection
+                setTimeout(() => {
+                    const mainTabButton = document.querySelector('.tab-button[data-tab="main"]');
+                    if (mainTabButton) {
+                        mainTabButton.click();
+                    }
+                }, 1000); // Small delay to allow the user to see their selection
             });
         }
     }
@@ -302,49 +315,18 @@ class UserInteractions {
      * Set up log display
      */
     setupLogDisplay() {
+        // Hide the log display element completely
         const logDisplay = document.getElementById('log-display');
-        const toggleButton = document.getElementById('toggle-logs');
-        const clearButton = document.getElementById('clear-logs');
-        
-        if (!logDisplay || !toggleButton || !clearButton) return;
-        
-        // Show logs with keyboard shortcut (L key)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'l' || e.key === 'L') {
-                logDisplay.style.display = logDisplay.style.display === 'none' ? 'block' : 'none';
-            }
-        });
-        
-        // Toggle button
-        toggleButton.addEventListener('click', () => {
+        if (logDisplay) {
             logDisplay.style.display = 'none';
-        });
+        }
         
-        // Clear button
-        clearButton.addEventListener('click', () => {
-            const logContent = document.getElementById('log-content');
-            if (logContent) {
-                logContent.innerHTML = '';
-                this.logMessage('Log cleared');
-            }
-        });
-        
-        // Show log display button
-        const showLogsButton = document.createElement('button');
-        showLogsButton.textContent = 'Show Logs';
-        showLogsButton.style.position = 'fixed';
-        showLogsButton.style.bottom = '10px';
-        showLogsButton.style.left = '10px';
-        showLogsButton.style.zIndex = '1000';
-        showLogsButton.addEventListener('click', () => {
-            logDisplay.style.display = 'block';
-        });
-        document.body.appendChild(showLogsButton);
-        
-        // Subscribe to log events
+        // Subscribe to log events - only log to console
         window.eventBus.subscribe('game:log', (logData) => {
             this.logMessage(logData.message, logData.type);
         });
+        
+        console.log('Log display redirected to console');
     }
 
     /**
@@ -353,61 +335,9 @@ class UserInteractions {
      * @param {string} type - Log type (info, warning, error)
      */
     logMessage(message, type = 'info') {
-        // Log to console
-        console.log(`[${type.toUpperCase()}] ${message}`);
-        
-        // Add to log display
-        const logContent = document.getElementById('log-content');
-        if (!logContent) return;
-        
-        // Check if there's a similar message already
-        const existingEntries = logContent.querySelectorAll('.log-entry');
-        let found = false;
-        
-        for (let i = 0; i < existingEntries.length; i++) {
-            const entry = existingEntries[i];
-            const entryMessage = entry.getAttribute('data-message');
-            const entryType = entry.getAttribute('data-type');
-            
-            if (entryMessage === message && entryType === type) {
-                // Found a duplicate, increment count
-                const countEl = entry.querySelector('.log-count');
-                const count = parseInt(countEl.textContent.replace(/[()]/g, '')) || 1;
-                countEl.textContent = `(${count + 1})`;
-                
-                // Move to bottom
-                logContent.appendChild(entry);
-                found = true;
-                break;
-            }
-        }
-        
-        if (!found) {
-            // Create new entry
-            const logEntry = document.createElement('div');
-            logEntry.className = 'log-entry';
-            logEntry.setAttribute('data-message', message);
-            logEntry.setAttribute('data-type', type);
-            logEntry.style.marginBottom = '3px';
-            logEntry.style.borderBottom = '1px solid #333';
-            logEntry.style.paddingBottom = '3px';
-            logEntry.innerHTML = `
-                <span style="color: ${type === 'error' ? '#f85149' : type === 'warning' ? '#f0883e' : '#3fb950'}">
-                    [${new Date().toLocaleTimeString()}]
-                </span>
-                ${message}
-                <span class="log-count" style="color: #8338ec; margin-left: 5px;"></span>
-            `;
-            logContent.appendChild(logEntry);
-        }
-        
-        // Auto-scroll to bottom
-        logContent.scrollTop = logContent.scrollHeight;
-        
-        // Limit to 30 entries
-        while (logContent.children.length > 30) {
-            logContent.removeChild(logContent.firstChild);
-        }
+        // Log to console only
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`[${timestamp}] [${type.toUpperCase()}] ${message}`);
     }
 }
 

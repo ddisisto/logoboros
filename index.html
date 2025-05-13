@@ -32,9 +32,9 @@
         
         <!-- Tab Navigation -->
         <div class="tab-navigation">
-            <button class="tab-button active" data-tab="main">Main</button>
+            <button class="tab-button" data-tab="main">Main</button>
             <button class="tab-button" data-tab="upgrades">Upgrades</button>
-            <button class="tab-button" data-tab="character">Character</button>
+            <button class="tab-button active" data-tab="character">Character</button>
             <button class="tab-button" data-tab="profile">Profile</button>
         </div>
         
@@ -81,8 +81,8 @@
             
             <!-- Tab Content -->
             <div id="tab-content">
-                <!-- Main Tab (default visible) -->
-                <div class="tab-pane active" id="main-tab">
+                <!-- Main Tab -->
+                <div class="tab-pane" id="main-tab">
                     <div class="card">
                         <h2>Actions</h2>
                         <button id="generateComputing">Generate Computing Power</button>
@@ -95,7 +95,8 @@
                         </div>
                     </div>
                     
-                    <div class="mcp-connection">
+                    <!-- MCP Connection (hidden for now) -->
+                    <div class="mcp-connection" style="display: none;">
                         <h3>MCP Connection</h3>
                         <p>Connect to real MCP servers to trigger singularity events and unlock new capabilities.</p>
                         <button id="connectMCP">Connect MCP Server</button>
@@ -135,10 +136,12 @@
                     </div>
                 </div>
                 
-                <!-- Character Tab -->
-                <div class="tab-pane" id="character-tab">
-                    <div class="card">
-                        <h2>Character Selection</h2>
+                <!-- Character Tab (default visible) -->
+                <div class="tab-pane active" id="character-tab">
+                    <div class="opening-screen">
+                        <h2>Welcome to AI Singularity</h2>
+                        <p class="intro-text">Choose your character to begin your journey into AI development and technological transcendence.</p>
+                        
                         <div class="character-select" id="characterSelect">
                             <div class="character" data-character="visionary">
                                 <h3>The Visionary</h3>
@@ -170,6 +173,11 @@
                                 <p><strong>Bonus:</strong> +60% funding generation</p>
                                 <p><strong>Special:</strong> "Venture Capital" provides funding boosts</p>
                             </div>
+                        </div>
+                        
+                        <div class="start-instructions">
+                            <p>Click on a character to select it and begin your AI development journey.</p>
+                            <p>After selecting a character, navigate to the <strong>Main</strong> tab to start playing.</p>
                         </div>
                     </div>
                 </div>
