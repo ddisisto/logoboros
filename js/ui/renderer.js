@@ -172,15 +172,41 @@ class UIRenderer {
     renderNewsItem(newsItem) {
         if (!this.elements.newsTicker) return;
         
-        const newsItemElement = document.createElement('div');
-        newsItemElement.className = 'news-item';
-        newsItemElement.innerHTML = `<span class="timestamp">${newsItem.timestamp}</span><span>${newsItem.text}</span>`;
+        // Check if there's an existing item with the same text
+        const existingItems = Array.from(this.elements.newsTicker.querySelectorAll('.news-item'));
+        const existingItem = existingItems.find(item => {
+            const textSpan = item.querySelector('span:not(.timestamp)');
+            return textSpan && textSpan.textContent === newsItem.text;
+        });
         
-        this.elements.newsTicker.prepend(newsItemElement);
-        
-        // Limit news items
-        while (this.elements.newsTicker.children.length > 20) {
-            this.elements.newsTicker.removeChild(this.elements.newsTicker.lastChild);
+        if (existingItem) {
+            // If the item exists, move it to the top and highlight it
+            this.elements.newsTicker.removeChild(existingItem);
+            this.elements.newsTicker.prepend(existingItem);
+            
+            // Update the timestamp
+            const timestampSpan = existingItem.querySelector('.timestamp');
+            if (timestampSpan) {
+                timestampSpan.textContent = newsItem.timestamp;
+            }
+            
+            // Add highlight animation
+            existingItem.classList.add('highlight');
+            setTimeout(() => {
+                existingItem.classList.remove('highlight');
+            }, 1500);
+        } else {
+            // Create a new item if it doesn't exist
+            const newsItemElement = document.createElement('div');
+            newsItemElement.className = 'news-item';
+            newsItemElement.innerHTML = `<span class="timestamp">${newsItem.timestamp}</span><span>${newsItem.text}</span>`;
+            
+            this.elements.newsTicker.prepend(newsItemElement);
+            
+            // Limit news items
+            while (this.elements.newsTicker.children.length > 20) {
+                this.elements.newsTicker.removeChild(this.elements.newsTicker.lastChild);
+            }
         }
     }
 
