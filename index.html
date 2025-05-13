@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Singularity - An Incremental Game</title>
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --background: #0d1117;
+            --foreground: #c9d1d9;
+            --card-bg: #161b22;
+            --success: #3fb950;
+            --warning: #f0883e;
+            --danger: #f85149;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: var(--accent);
+            font-style: italic;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+        }
+        
+        .resources {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .resource {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .resource-name {
+            font-weight: bold;
+        }
+        
+        .resource-value {
+            color: var(--primary);
+        }
+        
+        .progress-container {
+            background-color: #30363d;
+            border-radius: 10px;
+            height: 20px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .character-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .character {
+            background-color: #21262d;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .character:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        .character.selected {
+            border-color: var(--accent);
+            background-color: #2d333b;
+        }
+        
+        .character h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        
+        .upgrades {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .upgrade {
+            background-color: #21262d;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upgrade:hover {
+            background-color: #2d333b;
+            transform: translateY(-3px);
+        }
+        
+        .upgrade.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .upgrade h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        
+        .cost {
+            color: var(--warning);
+            font-size: 0.9rem;
+        }
+        
+        .benefit {
+            color: var(--success);
+            font-size: 0.9rem;
+        }
+        
+        .news-ticker {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            height: 100px;
+            overflow-y: auto;
+        }
+        
+        .news-item {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #30363d;
+        }
+        
+        .timestamp {
+            color: var(--secondary);
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #2a75e6;
+            transform: translateY(-2px);
+        }
+        
+        button.singularity {
+            background-color: var(--accent);
+        }
+        
+        button.singularity:hover {
+            background-color: #e0005f;
+        }
+        
+        button:disabled {
+            background-color: #30363d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .phase {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .mcp-connection {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #21262d;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Singularity</h1>
+            <p class="subtitle">An Incremental Game of AI Development and Technological Transcendence</p>
+        </header>
+        
+        <div class="news-ticker" id="newsTicker">
+            <div class="news-item">
+                <span class="timestamp">00:00:00</span>
+                <span>Welcome to AI Singularity. Your journey begins now.</span>
+            </div>
+        </div>
+        
+        <div class="grid">
+            <div>
+                <div class="resources">
+                    <h2>Resources</h2>
+                    <div class="resource">
+                        <span class="resource-name">Computing Power</span>
+                        <span class="resource-value" id="computingPower">0</span>
+                    </div>
+                    <div class="resource">
+                        <span class="resource-name">Data</span>
+                        <span class="resource-value" id="data">0</span>
+                    </div>
+                    <div class="resource">
+                        <span class="resource-name">Influence</span>
+                        <span class="resource-value" id="influence">0</span>
+                    </div>
+                    <div class="resource">
+                        <span class="resource-name">Funding</span>
+                        <span class="resource-value" id="funding">0</span>
+                    </div>
+                    
+                    <h3>Development Phase: <span class="phase" id="phase">Narrow AI</span></h3>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Actions</h2>
+                    <button id="generateComputing">Generate Computing Power</button>
+                    <button id="collectData">Collect Data</button>
+                    <button id="seekFunding">Seek Funding</button>
+                    <button id="buildInfluence">Build Influence</button>
+                    
+                    <div class="actions">
+                        <button class="singularity" id="singularity" disabled>Trigger Singularity</button>
+                    </div>
+                </div>
+                
+                <div class="mcp-connection">
+                    <h3>MCP Connection</h3>
+                    <p>Connect to real MCP servers to trigger singularity events and unlock new capabilities.</p>
+                    <button id="connectMCP">Connect MCP Server</button>
+                </div>
+                
+                <div class="card" style="margin-top: 20px;">
+                    <h3>User Profile</h3>
+                    <p>Share information about yourself to personalize your AI development journey.</p>
+                    <div style="margin-top: 10px;">
+                        <label for="user-name" style="display: block; margin-bottom: 5px;">Your Name:</label>
+                        <input type="text" id="user-name" style="width: 100%; padding: 5px; margin-bottom: 10px; background-color: #21262d; border: 1px solid #30363d; color: var(--foreground); border-radius: 4px;">
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="user-background" style="display: block; margin-bottom: 5px;">Your Background:</label>
+                        <select id="user-background" style="width: 100%; padding: 5px; margin-bottom: 10px; background-color: #21262d; border: 1px solid #30363d; color: var(--foreground); border-radius: 4px;">
+                            <option value="">Select your background</option>
+                            <option value="developer">Software Developer</option>
+                            <option value="researcher">AI Researcher</option>
+                            <option value="student">Student</option>
+                            <option value="enthusiast">Tech Enthusiast</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <label for="user-interests" style="display: block; margin-bottom: 5px;">AI Interests:</label>
+                        <textarea id="user-interests" style="width: 100%; height: 60px; padding: 5px; margin-bottom: 10px; background-color: #21262d; border: 1px solid #30363d; color: var(--foreground); border-radius: 4px;" placeholder="What aspects of AI are you most interested in?"></textarea>
+                    </div>
+                    <button id="save-profile">Save Profile</button>
+                </div>
+            </div>
+            
+            <div>
+                <div class="card">
+                    <h2>Character Selection</h2>
+                    <div class="character-select" id="characterSelect">
+                        <div class="character" data-character="visionary">
+                            <h3>The Visionary</h3>
+                            <p>A brilliant but eccentric technologist with unconventional ideas.</p>
+                            <p><strong>Bonus:</strong> +50% to algorithm breakthroughs</p>
+                            <p><strong>Special:</strong> "Eureka Moments" randomly unlock technologies</p>
+                        </div>
+                        <div class="character" data-character="engineer">
+                            <h3>The Engineer</h3>
+                            <p>A methodical, hands-on developer focused on practical solutions.</p>
+                            <p><strong>Bonus:</strong> +30% computing power efficiency</p>
+                            <p><strong>Special:</strong> "Optimization" improves existing systems</p>
+                        </div>
+                        <div class="character" data-character="dataScientist">
+                            <h3>The Data Scientist</h3>
+                            <p>A pattern-recognition specialist who excels at extracting insights.</p>
+                            <p><strong>Bonus:</strong> +40% data collection rate</p>
+                            <p><strong>Special:</strong> "Pattern Recognition" reveals hidden connections</p>
+                        </div>
+                        <div class="character" data-character="ethicsAdvocate">
+                            <h3>The Ethics Advocate</h3>
+                            <p>A thoughtful developer concerned with responsible AI.</p>
+                            <p><strong>Bonus:</strong> +25% influence generation</p>
+                            <p><strong>Special:</strong> "Ethical Framework" prevents negative events</p>
+                        </div>
+                        <div class="character" data-character="entrepreneur">
+                            <h3>The Entrepreneur</h3>
+                            <p>A business-minded innovator focused on applications and growth.</p>
+                            <p><strong>Bonus:</strong> +60% funding generation</p>
+                            <p><strong>Special:</strong> "Venture Capital" provides funding boosts</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Available Upgrades</h2>
+                    <div class="upgrades" id="upgradesContainer">
+                        <div class="upgrade" data-upgrade="hardware1">
+                            <h3>Basic Hardware</h3>
+                            <p>Improve your computing infrastructure.</p>
+                            <p class="cost">Cost: 50 Computing Power</p>
+                            <p class="benefit">+2 Computing Power/sec</p>
+                        </div>
+                        <div class="upgrade" data-upgrade="algorithm1">
+                            <h3>Machine Learning Basics</h3>
+                            <p>Implement fundamental ML algorithms.</p>
+                            <p class="cost">Cost: 30 Data</p>
+                            <p class="benefit">+50% Data efficiency</p>
+                        </div>
+                        <div class="upgrade" data-upgrade="funding1">
+                            <h3>Angel Investment</h3>
+                            <p>Secure initial funding for your project.</p>
+                            <p class="cost">Cost: 20 Influence</p>
+                            <p class="benefit">+5 Funding/sec</p>
+                        </div>
+                        <div class="upgrade disabled" data-upgrade="architecture1">
+                            <h3>Neural Architecture</h3>
+                            <p>Develop advanced neural network structures.</p>
+                            <p class="cost">Cost: 100 Computing Power, 80 Data</p>
+                            <p class="benefit">Unlocks General AI phase</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Display -->
+    <div id="log-display" style="position: fixed; bottom: 10px; left: 10px; width: 300px; height: 200px; background-color: rgba(0,0,0,0.8); color: #3fb950; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 5px; overflow-y: auto; display: none;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <h3 style="margin: 0; color: #3a86ff;">Game Logs</h3>
+            <button id="toggle-logs" style="background: none; border: none; color: #fff; cursor: pointer;">Hide</button>
+        </div>
+        <div id="log-content"></div>
+    </div>
+
+    <!-- MCP Bridge Script -->
+    <script src="bridge.js"></script>
+    
+    <!-- Game Script -->
+    <script>
+        // Enhanced logging function
+        function gameLog(message, type = 'info') {
+            // Log to console
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            // Add to log display
+            const logContent = document.getElementById('log-content');
+            if (logContent) {
+                const logEntry = document.createElement('div');
+                logEntry.style.marginBottom = '3px';
+                logEntry.style.borderBottom = '1px solid #333';
+                logEntry.style.paddingBottom = '3px';
+                logEntry.innerHTML = `<span style="color: ${type === 'error' ? '#f85149' : type === 'warning' ? '#f0883e' : '#3fb950'}">[${new Date().toLocaleTimeString()}]</span> ${message}`;
+                logContent.appendChild(logEntry);
+                
+                // Auto-scroll to bottom
+                logContent.scrollTop = logContent.scrollHeight;
+            }
+        }
+        
+        // Toggle log display
+        document.addEventListener('DOMContentLoaded', () => {
+            const logDisplay = document.getElementById('log-display');
+            const toggleButton = document.getElementById('toggle-logs');
+            
+            // Show logs with keyboard shortcut (L key)
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'l' || e.key === 'L') {
+                    logDisplay.style.display = logDisplay.style.display === 'none' ? 'block' : 'none';
+                }
+            });
+            
+            // Toggle button
+            toggleButton.addEventListener('click', () => {
+                logDisplay.style.display = 'none';
+            });
+            
+            // Show log display button
+            const showLogsButton = document.createElement('button');
+            showLogsButton.textContent = 'Show Logs';
+            showLogsButton.style.position = 'fixed';
+            showLogsButton.style.bottom = '10px';
+            showLogsButton.style.left = '10px';
+            showLogsButton.style.zIndex = '1000';
+            showLogsButton.addEventListener('click', () => {
+                logDisplay.style.display = 'block';
+            });
+            document.body.appendChild(showLogsButton);
+            
+            gameLog('Log system initialized');
+        });
+        // Game state
+        const gameState = {
+            character: null,
+            resources: {
+                computingPower: 10,
+                data: 5,
+                influence: 0,
+                funding: 0
+            },
+            rates: {
+                computingPower: 0.1,
+                data: 0.05,
+                influence: 0,
+                funding: 0
+            },
+            upgrades: {},
+            phase: "Narrow AI",
+            progress: 0,
+            news: [],
+            lastUpdate: Date.now(),
+            singularityThreshold: 1000
+        };
+
+        // DOM elements
+        const computingPowerEl = document.getElementById('computingPower');
+        const dataEl = document.getElementById('data');
+        const influenceEl = document.getElementById('influence');
+        const fundingEl = document.getElementById('funding');
+        const phaseEl = document.getElementById('phase');
+        const progressBarEl = document.getElementById('progressBar');
+        const newsTickerEl = document.getElementById('newsTicker');
+        const characterSelectEl = document.getElementById('characterSelect');
+        const upgradesContainerEl = document.getElementById('upgradesContainer');
+        const singularityBtn = document.getElementById('singularity');
+
+        // Action buttons
+        const generateComputingBtn = document.getElementById('generateComputing');
+        const collectDataBtn = document.getElementById('collectData');
+        const seekFundingBtn = document.getElementById('seekFunding');
+        const buildInfluenceBtn = document.getElementById('buildInfluence');
+        const connectMCPBtn = document.getElementById('connectMCP');
+
+        // Initialize the game
+        function init() {
+            updateDisplay();
+            setInterval(gameLoop, 100);
+            addNewsItem("System initialized. Welcome to AI Singularity.");
+            addNewsItem("Select a character to begin your journey.");
+            gameLog("Game initialized successfully");
+            
+            // Event listeners
+            characterSelectEl.addEventListener('click', selectCharacter);
+            upgradesContainerEl.addEventListener('click', purchaseUpgrade);
+            
+            // Listen for MCP capabilities from the bridge
+            document.addEventListener('mcpCapabilities', (event) => {
+                gameLog("Game received MCP capabilities: " + JSON.stringify(event.detail.capabilities), "info");
+                
+                // Add a news item
+                addNewsItem(`MCP capabilities received: ${event.detail.capabilities.join(', ')}`);
+                
+                // Boost resources based on capabilities
+                gameState.resources.computingPower += 100;
+                gameState.resources.data += 50;
+                gameState.progress += 200;
+                
+                // Update the display
+                updateDisplay();
+                
+                // Check if singularity is available
+                checkSingularityAvailability();
+            });
+            
+            generateComputingBtn.addEventListener('click', () => {
+                gameState.resources.computingPower += 1;
+                updateDisplay();
+                addNewsItem("Manual computing operation performed.");
+            });
+            
+            collectDataBtn.addEventListener('click', () => {
+                gameState.resources.data += 1;
+                updateDisplay();
+                addNewsItem("Data collection operation performed.");
+            });
+            
+            seekFundingBtn.addEventListener('click', () => {
+                if (gameState.resources.influence >= 5) {
+                    gameState.resources.influence -= 5;
+                    gameState.resources.funding += 10;
+                    updateDisplay();
+                    addNewsItem("Funding secured through influence channels.");
+                } else {
+                    addNewsItem("Not enough influence to secure funding.");
+                }
+            });
+            
+            buildInfluenceBtn.addEventListener('click', () => {
+                if (gameState.resources.data >= 5) {
+                    gameState.resources.data -= 5;
+                    gameState.resources.influence += 1;
+                    updateDisplay();
+                    addNewsItem("Influence increased through data insights.");
+                } else {
+                    addNewsItem("Not enough data to build influence.");
+                }
+            });
+            
+            singularityBtn.addEventListener('click', triggerSingularity);
+            
+            connectMCPBtn.addEventListener('click', () => {
+                // Remove resource requirement for demonstration purposes
+                addNewsItem("Attempting to connect to MCP server...");
+                setTimeout(() => {
+                    addNewsItem("MCP connection established! New capabilities unlocked.");
+                    gameState.progress += 100;
+                    // Bonus resources from MCP connection
+                    gameState.resources.computingPower += 50;
+                    gameState.resources.data += 30;
+                    updateDisplay();
+                    checkSingularityAvailability();
+                    
+                    // Log for potential integration
+                    gameLog("MCP_CONNECTION_EVENT: Established connection to Model Context Protocol server");
+                    gameLog("MCP_DATA: " + JSON.stringify(gameState).substring(0, 100) + "...", "info");
+                    
+                    // Create a custom event that could be captured by external scripts
+                    const mcpEvent = new CustomEvent('mcpConnection', {
+                        detail: {
+                            gameState: gameState,
+                            timestamp: new Date().toISOString(),
+                            message: "MCP connection established"
+                        }
+                    });
+                    document.dispatchEvent(mcpEvent);
+                }, 1500);
+            });
+            
+            // User profile save button
+            const saveProfileBtn = document.getElementById('save-profile');
+            if (saveProfileBtn) {
+                saveProfileBtn.addEventListener('click', () => {
+                    const userName = document.getElementById('user-name').value;
+                    const userBackground = document.getElementById('user-background').value;
+                    const userInterests = document.getElementById('user-interests').value;
+                    
+                    // Store user profile in game state
+                    gameState.userProfile = {
+                        name: userName,
+                        background: userBackground,
+                        interests: userInterests,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    // Log the profile information
+                    gameLog(`User profile saved: ${userName} (${userBackground})`, "info");
+                    addNewsItem(`Welcome, ${userName}! Your profile has been integrated into the AI development process.`);
+                    
+                    // Bonus for completing profile
+                    gameState.resources.influence += 10;
+                    updateDisplay();
+                    
+                    // Log to console for potential integration
+                    gameLog("USER_PROFILE_DATA: " + JSON.stringify(gameState.userProfile), "info");
+                });
+            }
+        }
+
+        // Game loop
+        function gameLoop() {
+            const now = Date.now();
+            const delta = (now - gameState.lastUpdate) / 1000;
+            gameState.lastUpdate = now;
+            
+            // Update resources based on rates
+            gameState.resources.computingPower += gameState.rates.computingPower * delta;
+            gameState.resources.data += gameState.rates.data * delta;
+            gameState.resources.influence += gameState.rates.influence * delta;
+            gameState.resources.funding += gameState.rates.funding * delta;
+            
+            // Update progress
+            gameState.progress += (gameState.rates.computingPower + gameState.rates.data) * 0.01 * delta;
+            
+            // Check for phase transitions
+            checkPhaseTransition();
+            
+            // Check if singularity is available
+            checkSingularityAvailability();
+            
+            // Random events
+            if (Math.random() < 0.01 * delta) {
+                generateRandomEvent();
+            }
+            
+            // Character special abilities
+            applyCharacterSpecials(delta);
+            
+            updateDisplay();
+        }
+
+        // Update the display
+        function updateDisplay() {
+            computingPowerEl.textContent = Math.floor(gameState.resources.computingPower);
+            dataEl.textContent = Math.floor(gameState.resources.data);
+            influenceEl.textContent = Math.floor(gameState.resources.influence);
+            fundingEl.textContent = Math.floor(gameState.resources.funding);
+            
+            phaseEl.textContent = gameState.phase;
+            
+            const progressPercent = (gameState.progress / gameState.singularityThreshold) * 100;
+            progressBarEl.style.width = `${Math.min(progressPercent, 100)}%`;
+        }
+
+        // Add a news item
+        function addNewsItem(text) {
+            const now = new Date();
+            const timeString = now.toTimeString().split(' ')[0];
+            
+            const newsItem = document.createElement('div');
+            newsItem.className = 'news-item';
+            newsItem.innerHTML = `<span class="timestamp">${timeString}</span><span>${text}</span>`;
+            
+            newsTickerEl.prepend(newsItem);
+            
+            // Limit news items
+            if (newsTickerEl.children.length > 10) {
+                newsTickerEl.removeChild(newsTickerEl.lastChild);
+            }
+        }
+
+        // Select a character
+        function selectCharacter(event) {
+            const characterEl = event.target.closest('.character');
+            if (!characterEl) return;
+            
+            // Remove selected class from all characters
+            document.querySelectorAll('.character').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked character
+            characterEl.classList.add('selected');
+            
+            // Set character in game state
+            gameState.character = characterEl.dataset.character;
+            
+            // Apply character bonuses
+            applyCharacterBonuses();
+            
+            addNewsItem(`You have chosen the path of ${characterEl.querySelector('h3').textContent}.`);
+        }
+
+        // Apply character bonuses
+        function applyCharacterBonuses() {
+            // Reset rates to base values
+            gameState.rates = {
+                computingPower: 0.1,
+                data: 0.05,
+                influence: 0,
+                funding: 0
+            };
+            
+            // Apply character-specific bonuses
+            switch (gameState.character) {
+                case 'visionary':
+                    // Bonus to algorithm breakthroughs
+                    addNewsItem("Your visionary perspective accelerates algorithm development.");
+                    break;
+                case 'engineer':
+                    // Bonus to computing power
+                    gameState.rates.computingPower *= 1.3;
+                    addNewsItem("Your engineering expertise improves computing efficiency.");
+                    break;
+                case 'dataScientist':
+                    // Bonus to data collection
+                    gameState.rates.data *= 1.4;
+                    addNewsItem("Your data science skills enhance data collection rates.");
+                    break;
+                case 'ethicsAdvocate':
+                    // Bonus to influence
+                    gameState.rates.influence = 0.05;
+                    addNewsItem("Your ethical approach generates public trust and influence.");
+                    break;
+                case 'entrepreneur':
+                    // Bonus to funding
+                    gameState.rates.funding = 0.1;
+                    addNewsItem("Your business acumen attracts initial funding.");
+                    break;
+            }
+        }
+
+        // Apply character special abilities
+        function applyCharacterSpecials(delta) {
+            if (!gameState.character) return;
+            
+            switch (gameState.character) {
+                case 'visionary':
+                    // Random eureka moments
+                    if (Math.random() < 0.005 * delta) {
+                        gameState.progress += 10;
+                        addNewsItem("Eureka! A moment of inspiration accelerates your progress.");
+                    }
+                    break;
+                case 'engineer':
+                    // Optimization improves efficiency over time
+                    gameState.rates.computingPower *= (1 + 0.0001 * delta);
+                    break;
+                case 'dataScientist':
+                    // Pattern recognition occasionally reveals insights
+                    if (Math.random() < 0.01 * delta) {
+                        gameState.resources.data += 5;
+                        addNewsItem("Pattern recognized! Additional data insights discovered.");
+                    }
+                    break;
+                case 'ethicsAdvocate':
+                    // Ethical framework prevents negative events
+                    // (implemented in generateRandomEvent)
+                    break;
+                case 'entrepreneur':
+                    // Venture capital provides funding boosts
+                    if (Math.random() < 0.008 * delta) {
+                        gameState.resources.funding += 20;
+                        addNewsItem("Venture capital funding round successful!");
+                    }
+                    break;
+            }
+        }
+
+        // Purchase an upgrade
+        function purchaseUpgrade(event) {
+            const upgradeEl = event.target.closest('.upgrade');
+            if (!upgradeEl || upgradeEl.classList.contains('disabled')) return;
+            
+            const upgradeId = upgradeEl.dataset.upgrade;
+            
+            // Check if already purchased
+            if (gameState.upgrades[upgradeId]) return;
+            
+            // Check costs and apply effects
+            switch (upgradeId) {
+                case 'hardware1':
+                    if (gameState.resources.computingPower >= 50) {
+                        gameState.resources.computingPower -= 50;
+                        gameState.rates.computingPower += 2;
+                        gameState.upgrades[upgradeId] = true;
+                        upgradeEl.classList.add('disabled');
+                        addNewsItem("Basic Hardware upgrade installed. Computing power increased.");
+                    } else {
+                        addNewsItem("Not enough computing power for this upgrade.");
+                    }
+                    break;
+                case 'algorithm1':
+                    if (gameState.resources.data >= 30) {
+                        gameState.resources.data -= 30;
+                        gameState.rates.data *= 1.5;
+                        gameState.upgrades[upgradeId] = true;
+                        upgradeEl.classList.add('disabled');
+                        addNewsItem("Machine Learning Basics implemented. Data efficiency improved.");
+                    } else {
+                        addNewsItem("Not enough data for this upgrade.");
+                    }
+                    break;
+                case 'funding1':
+                    if (gameState.resources.influence >= 20) {
+                        gameState.resources.influence -= 20;
+                        gameState.rates.funding += 5;
+                        gameState.upgrades[upgradeId] = true;
+                        upgradeEl.classList.add('disabled');
+                        addNewsItem("Angel Investment secured. Funding rate increased.");
+                    } else {
+                        addNewsItem("Not enough influence for this upgrade.");
+                    }
+                    break;
+                case 'architecture1':
+                    if (gameState.resources.computingPower >= 100 && gameState.resources.data >= 80) {
+                        gameState.resources.computingPower -= 100;
+                        gameState.resources.data -= 80;
+                        gameState.phase = "General AI";
+                        gameState.progress += 200;
+                        gameState.upgrades[upgradeId] = true;
+                        upgradeEl.classList.add('disabled');
+                        addNewsItem("Neural Architecture breakthrough! Advancing to General AI phase.");
+                    } else {
+                        addNewsItem("Insufficient resources for Neural Architecture upgrade.");
+                    }
+                    break;
+            }
+            
+            updateDisplay();
+        }
+
+        // Check for phase transitions
+        function checkPhaseTransition() {
+            // Enable architecture1 upgrade when enough resources
+            const architectureUpgrade = document.querySelector('[data-upgrade="architecture1"]');
+            if (gameState.resources.computingPower >= 100 && gameState.resources.data >= 80) {
+                architectureUpgrade.classList.remove('disabled');
+            }
+            
+            // Phase transitions based on progress
+            if (gameState.progress >= 500 && gameState.phase === "Narrow AI") {
+                gameState.phase = "General AI";
+                addNewsItem("Breakthrough! Your AI has evolved to the General AI phase.");
+            } else if (gameState.progress >= 800 && gameState.phase === "General AI") {
+                gameState.phase = "Superintelligence";
+                addNewsItem("Remarkable progress! Your AI has reached the Superintelligence phase.");
+            }
+        }
+
+        // Check if singularity is available
+        function checkSingularityAvailability() {
+            if (gameState.progress >= gameState.singularityThreshold) {
+                singularityBtn.disabled = false;
+                addNewsItem("ALERT: Singularity threshold reached. Transcendence is now possible.");
+            }
+        }
+
+        // Trigger singularity
+        function triggerSingularity() {
+            addNewsItem("SINGULARITY EVENT INITIATED");
+            
+            // Visual effect
+            document.body.style.transition = "all 2s";
+            document.body.style.backgroundColor = "#fff";
+            
+            setTimeout(() => {
+                // Reset with bonuses
+                const computingBonus = Math.floor(gameState.resources.computingPower / 100);
+                const dataBonus = Math.floor(gameState.resources.data / 100);
+                
+                gameState.resources = {
+                    computingPower: 10 + computingBonus,
+                    data: 5 + dataBonus,
+                    influence: 0,
+                    funding: 0
+                };
+                
+                gameState.rates = {
+                    computingPower: 0.1 * (1 + computingBonus * 0.1),
+                    data: 0.05 * (1 + dataBonus * 0.1),
+                    influence: 0,
+                    funding: 0
+                };
+                
+                gameState.phase = "Narrow AI";
+                gameState.progress = 0;
+                gameState.singularityThreshold *= 1.5;
+                
+                // Reset upgrades but keep character
+                gameState.upgrades = {};
+                
+                // Re-apply character bonuses
+                applyCharacterBonuses();
+                
+                // Reset UI
+                document.querySelectorAll('.upgrade').forEach(el => {
+                    el.classList.remove('disabled');
+                });
+                
+                singularityBtn.disabled = true;
+                
+                // Reset visual effect
+                document.body.style.backgroundColor = "#0d1117"; // Reset to original background color
+                
+                addNewsItem("Singularity complete. New cycle begun with permanent bonuses.");
+                addNewsItem(`Computing bonus: +${computingBonus}, Data bonus: +${dataBonus}`);
+            }, 2000);
+        }
+
+        // Generate random events
+        function generateRandomEvent() {
+            const events = [
+                {
+                    text: "Security breach detected. Lost some computing resources.",
+                    effect: () => { gameState.resources.computingPower *= 0.9; }
+                },
+                {
+                    text: "Data corruption issue. Some data lost.",
+                    effect: () => { gameState.resources.data *= 0.9; }
+                },
+                {
+                    text: "Public relations crisis. Influence decreased.",
+                    effect: () => { gameState.resources.influence *= 0.8; }
+                },
+                {
+                    text: "Unexpected breakthrough! Progress accelerated.",
+                    effect: () => { gameState.progress += 10; }
+                },
+                {
+                    text: "Optimization algorithm discovered. Computing efficiency increased.",
+                    effect: () => { gameState.rates.computingPower *= 1.1; }
+                }
+            ];
+            
+            // Select random event
+            const event = events[Math.floor(Math.random() * events.length)];
+            
+            // Ethics Advocate can prevent negative events
+            if (gameState.character === 'ethicsAdvocate' && event.text.includes("crisis") || 
+                event.text.includes("breach") || 
+                event.text.includes("corruption")) {
+                addNewsItem("Ethical framework prevented a negative event.");
+                return;
+            }
+            
+            // Apply event
+            addNewsItem(event.text);
+            event.effect();
+        }
+
+        // Start the game
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
