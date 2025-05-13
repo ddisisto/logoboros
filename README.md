@@ -22,7 +22,11 @@ The game features integration with the Model Context Protocol (MCP), allowing fo
 - **MCP Integration**: Connect to real MCP servers to trigger singularity events and unlock new capabilities
 - **Dynamic News Ticker**: AI-generated news items that reflect player actions and progress
 
-## Installation
+## Play Online
+
+You can play the game online at [https://ddisisto.github.io/logoboros/](https://ddisisto.github.io/logoboros/)
+
+## Installation (Local Development)
 
 1. Clone the repository:
    ```
@@ -30,7 +34,7 @@ The game features integration with the Model Context Protocol (MCP), allowing fo
    cd logoboros
    ```
 
-2. Open `index.html` in your web browser to start playing.
+2. Open `index.html` in your web browser to start playing locally.
 
 ## How to Play
 
