@@ -10,6 +10,7 @@ class MCPBridge {
         this.connections = [];
         this.eventLog = [];
         this.isConnected = false;
+        this.activeRequests = new Map();
         
         // Initialize the bridge
         this.init();
@@ -21,6 +22,13 @@ class MCPBridge {
         // Listen for MCP connection events from the game
         document.addEventListener('mcpConnection', this.handleMCPConnection.bind(this));
         
+        // Listen for MCP server responses
+        document.addEventListener('mcpConnectionResponse', this.handleMCPConnectionResponse.bind(this));
+        document.addEventListener('mcpResourceResponse', this.handleMCPResourceResponse.bind(this));
+        document.addEventListener('mcpToolResponse', this.handleMCPToolResponse.bind(this));
+        
+        console.log("MCP Bridge event listeners set up for: mcpConnection, mcpConnectionResponse, mcpResourceResponse, mcpToolResponse");
+        
         // Create a UI for the bridge
         this.createUI();
     }
@@ -30,7 +38,7 @@ class MCPBridge {
         
         // Log the event
         this.eventLog.push({
-            type: 'connection',
+            type: 'connection-request',
             timestamp: new Date(),
             data: event.detail
         });
@@ -38,8 +46,195 @@ class MCPBridge {
         // Update the UI
         this.updateUI();
         
-        // Simulate connecting to a real MCP server
-        this.simulateMCPServerConnection(event.detail);
+        // Check if we have a real MCP server available
+        if (window.mcpServer) {
+            console.log("Real MCP server detected, initiating connection");
+            this.connectToRealMCPServer(event.detail);
+        } else {
+            console.log("No real MCP server detected, falling back to simulation");
+            this.simulateMCPServerConnection(event.detail);
+        }
+        
+        // Debug: Check if mcpConnectionRequest event is being dispatched correctly
+        console.log("DEBUG: Adding test event listener for mcpConnectionRequest");
+        const testListener = (e) => {
+            console.log("DEBUG: mcpConnectionRequest event received by test listener:", e.detail);
+        };
+        document.addEventListener('mcpConnectionRequest', testListener);
+    }
+    
+    connectToRealMCPServer(data) {
+        console.log("Connecting to real MCP server with data:", data);
+        
+        // Create a connection request event
+        const connectionRequest = new CustomEvent('mcpConnectionRequest', {
+            detail: {
+                clientId: 'game-client-' + Date.now(),
+                clientName: 'AI Singularity Game',
+                clientVersion: '1.0.0',
+                requestedCapabilities: ['data-analysis', 'resource-generation', 'singularity-simulation'],
+                timestamp: new Date().toISOString(),
+                gameState: data.gameState
+            }
+        });
+        
+        // Dispatch the connection request
+        console.log("DEBUG: About to dispatch mcpConnectionRequest event with detail:", connectionRequest.detail);
+        document.dispatchEvent(connectionRequest);
+        console.log("DEBUG: Dispatched mcpConnectionRequest event");
+        
+        // Add a timeout to check if we get a response
+        setTimeout(() => {
+            if (!this.isConnected) {
+                console.log("DEBUG: No connection response received after 2 seconds");
+            }
+        }, 2000);
+    }
+    
+    handleMCPConnectionResponse(event) {
+        console.log("MCP Bridge received connection response:", event.detail);
+        console.log("DEBUG: Connection response received successfully!");
+        
+        // Extract connection details
+        const { clientId, serverName, serverVersion, capabilities, resources, tools } = event.detail;
+        
+        // Set connection status
+        this.isConnected = true;
+        
+        // Add the server to our connections
+        this.connections.push({
+            id: clientId,
+            name: serverName,
+            version: serverVersion,
+            capabilities: capabilities,
+            resources: resources,
+            tools: tools,
+            connectedAt: new Date()
+        });
+        
+        // Log the connection
+        this.eventLog.push({
+            type: 'server-connection',
+            timestamp: new Date(),
+            server: this.connections[this.connections.length - 1]
+        });
+        
+        // Update the UI
+        this.updateUI();
+        
+        // Send capabilities to the game
+        this.sendCapabilitiesToGame();
+        
+        // Request game state resource
+        this.requestResource(clientId, "mcp://ai-singularity/game-state");
+    }
+    
+    requestResource(clientId, uri) {
+        console.log(`Requesting resource ${uri} from client ${clientId}`);
+        
+        // Create a resource request event
+        const resourceRequest = new CustomEvent('mcpResourceRequest', {
+            detail: {
+                clientId: clientId,
+                uri: uri,
+                timestamp: new Date().toISOString()
+            }
+        });
+        
+        // Dispatch the resource request
+        document.dispatchEvent(resourceRequest);
+    }
+    
+    handleMCPResourceResponse(event) {
+        console.log("MCP Bridge received resource response:", event.detail);
+        
+        // Extract resource data
+        const { clientId, uri, data } = event.detail;
+        
+        // Log the resource response
+        this.eventLog.push({
+            type: 'resource-response',
+            timestamp: new Date(),
+            uri: uri,
+            data: data
+        });
+        
+        // Update the UI
+        this.updateUI();
+        
+        // If this is game state data, use it to update the game
+        if (uri === "mcp://ai-singularity/game-state") {
+            this.updateGameWithResourceData(data);
+        }
+    }
+    
+    executeTool(clientId, toolName, params) {
+        console.log(`Executing tool ${toolName} on client ${clientId} with params:`, params);
+        
+        // Create a tool request event
+        const toolRequest = new CustomEvent('mcpToolRequest', {
+            detail: {
+                clientId: clientId,
+                toolName: toolName,
+                params: params,
+                timestamp: new Date().toISOString()
+            }
+        });
+        
+        // Dispatch the tool request
+        document.dispatchEvent(toolRequest);
+    }
+    
+    handleMCPToolResponse(event) {
+        console.log("MCP Bridge received tool response:", event.detail);
+        
+        // Extract tool result
+        const { clientId, toolName, result } = event.detail;
+        
+        // Log the tool response
+        this.eventLog.push({
+            type: 'tool-response',
+            timestamp: new Date(),
+            toolName: toolName,
+            result: result
+        });
+        
+        // Update the UI
+        this.updateUI();
+        
+        // Update the game with the tool result
+        this.updateGameWithToolResult(toolName, result);
+    }
+    
+    updateGameWithResourceData(data) {
+        console.log("Updating game with resource data:", data);
+        
+        // Create a custom event to send resource data to the game
+        const resourceDataEvent = new CustomEvent('mcpResourceData', {
+            detail: {
+                resourceData: data,
+                timestamp: new Date().toISOString()
+            }
+        });
+        
+        // Dispatch the event
+        document.dispatchEvent(resourceDataEvent);
+    }
+    
+    updateGameWithToolResult(toolName, result) {
+        console.log(`Updating game with ${toolName} tool result:`, result);
+        
+        // Create a custom event to send tool result to the game
+        const toolResultEvent = new CustomEvent('mcpToolResult', {
+            detail: {
+                toolName: toolName,
+                result: result,
+                timestamp: new Date().toISOString()
+            }
+        });
+        
+        // Dispatch the event
+        document.dispatchEvent(toolResultEvent);
     }
     
     simulateMCPServerConnection(data) {
@@ -74,11 +269,22 @@ class MCPBridge {
     }
     
     sendCapabilitiesToGame() {
+        // Get capabilities from all connected servers
+        const allCapabilities = this.connections.reduce((acc, conn) => {
+            if (conn.capabilities) {
+                return [...acc, ...conn.capabilities];
+            }
+            return acc;
+        }, []);
+        
+        // Remove duplicates
+        const uniqueCapabilities = [...new Set(allCapabilities)];
+        
         // Create a custom event to send capabilities back to the game
         const capabilitiesEvent = new CustomEvent('mcpCapabilities', {
             detail: {
                 connections: this.connections,
-                capabilities: ['data-access', 'tool-execution', 'prompt-templates'],
+                capabilities: uniqueCapabilities,
                 timestamp: new Date().toISOString()
             }
         });
@@ -173,11 +379,23 @@ class MCPBridge {
                 recentEvents.forEach(event => {
                     html += `<div style="margin-bottom: 5px; padding: 5px; background-color: #2d333b; border-radius: 3px;">`;
                     html += `<div style="color: #8338ec; font-size: 10px;">${event.timestamp.toLocaleTimeString()} - ${event.type}</div>`;
-                    if (event.type === 'connection') {
+                    
+                    // Display different content based on event type
+                    if (event.type === 'connection-request' || event.type === 'connection') {
                         html += `<div>Game state progress: ${event.data.gameState.progress}</div>`;
                     } else if (event.type === 'server-connection') {
                         html += `<div>Connected to: ${event.server.name}</div>`;
+                        if (event.server.capabilities) {
+                            html += `<div>Capabilities: ${event.server.capabilities.join(', ')}</div>`;
+                        }
+                    } else if (event.type === 'resource-response') {
+                        html += `<div>Resource: ${event.uri}</div>`;
+                        html += `<div>Data: ${JSON.stringify(event.data).substring(0, 50)}...</div>`;
+                    } else if (event.type === 'tool-response') {
+                        html += `<div>Tool: ${event.toolName}</div>`;
+                        html += `<div>Result: ${JSON.stringify(event.result).substring(0, 50)}...</div>`;
                     }
+                    
                     html += `</div>`;
                 });
                 eventsEl.innerHTML = html;
@@ -191,4 +409,43 @@ class MCPBridge {
 // Initialize the bridge when the document is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.mcpBridge = new MCPBridge();
+    
+    // Add buttons to test MCP tools
+    const ui = document.getElementById('mcp-bridge-ui');
+    if (ui && window.mcpServer) {
+        const toolsSection = document.createElement('div');
+        toolsSection.innerHTML = '<h4 style="margin: 5px 0; color: #8338ec;">MCP Tools</h4>';
+        
+        // Add buttons for each tool
+        const tools = ['data-analysis', 'resource-generation', 'singularity-simulation', 'meta-narrative-integration'];
+        tools.forEach(tool => {
+            const button = document.createElement('button');
+            button.textContent = `Execute ${tool}`;
+            button.style.margin = '5px';
+            button.style.padding = '5px';
+            button.style.backgroundColor = '#3a86ff';
+            button.style.color = '#fff';
+            button.style.border = 'none';
+            button.style.borderRadius = '3px';
+            button.style.cursor = 'pointer';
+            
+            button.addEventListener('click', () => {
+                if (window.mcpBridge.connections.length > 0) {
+                    const clientId = window.mcpBridge.connections[0].id;
+                    window.mcpBridge.executeTool(clientId, tool, {
+                        resourceType: 'computingPower',
+                        amount: 100,
+                        type: 'technological',
+                        element: 'conversation'
+                    });
+                } else {
+                    console.error('No active MCP connections');
+                }
+            });
+            
+            toolsSection.appendChild(button);
+        });
+        
+        ui.appendChild(toolsSection);
+    }
 });

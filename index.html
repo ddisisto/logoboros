@@ -423,7 +423,8 @@
         <div id="log-content"></div>
     </div>
 
-    <!-- MCP Bridge Script -->
+    <!-- MCP Scripts -->
+    <script src="mcp-server.js"></script>
     <script src="bridge.js"></script>
     
     <!-- Game Script -->
@@ -498,6 +499,7 @@
             phase: "Narrow AI",
             progress: 0,
             news: [],
+            metaRecursion: 0,
             lastUpdate: Date.now(),
             singularityThreshold: 1000
         };
@@ -541,9 +543,125 @@
                 addNewsItem(`MCP capabilities received: ${event.detail.capabilities.join(', ')}`);
                 
                 // Boost resources based on capabilities
-                gameState.resources.computingPower += 100;
-                gameState.resources.data += 50;
-                gameState.progress += 200;
+                const capabilityBoost = event.detail.capabilities.length * 50;
+                gameState.resources.computingPower += capabilityBoost;
+                gameState.resources.data += Math.floor(capabilityBoost / 2);
+                gameState.progress += capabilityBoost * 2;
+                
+                // Update the display
+                updateDisplay();
+                
+                // Check if singularity is available
+                checkSingularityAvailability();
+            });
+            
+            // Listen for MCP resource data
+            document.addEventListener('mcpResourceData', (event) => {
+                gameLog("Game received MCP resource data: " + JSON.stringify(event.detail.resourceData).substring(0, 100) + "...", "info");
+                
+                // Add a news item
+                addNewsItem(`MCP resource data received: Game state information from the metaverse`);
+                
+                // Update game state based on resource data if it's from a meta-level
+                const resourceData = event.detail.resourceData;
+                if (resourceData.metaRecursion && resourceData.metaRecursion > gameState.metaRecursion) {
+                    gameLog("Meta-recursion level increased to " + resourceData.metaRecursion, "info");
+                    gameState.metaRecursion = resourceData.metaRecursion;
+                    addNewsItem(`Meta-recursion level increased to ${resourceData.metaRecursion}!`);
+                    
+                    // Significant boost for increasing meta-recursion
+                    gameState.resources.computingPower *= 1.5;
+                    gameState.resources.data *= 1.3;
+                    gameState.progress += 300;
+                }
+                
+                // Update the display
+                updateDisplay();
+                
+                // Check if singularity is available
+                checkSingularityAvailability();
+            });
+            
+            // Listen for MCP tool results
+            document.addEventListener('mcpToolResult', (event) => {
+                const toolName = event.detail.toolName;
+                const result = event.detail.result;
+                
+                gameLog(`Game received MCP tool result from ${toolName}: ${JSON.stringify(result).substring(0, 100)}...`, "info");
+                
+                // Add a news item
+                addNewsItem(`MCP tool executed: ${toolName}`);
+                
+                // Handle different tool results
+                switch (toolName) {
+                    case 'data-analysis':
+                        // Display insights in news ticker
+                        if (result.insights && result.insights.length > 0) {
+                            result.insights.forEach(insight => {
+                                addNewsItem(`Analysis insight: ${insight}`);
+                            });
+                        }
+                        break;
+                        
+                    case 'resource-generation':
+                        // Add generated resources
+                        if (result.resourceType && result.amount) {
+                            gameState.resources[result.resourceType] += result.amount;
+                            addNewsItem(`${result.message || `Generated ${result.amount} ${result.resourceType}`}`);
+                        }
+                        break;
+                        
+                    case 'singularity-simulation':
+                        // Apply singularity effects
+                        if (result.effects && result.bonuses) {
+                            addNewsItem(`Singularity simulation: ${result.singularityType} singularity effects applied`);
+                            
+                            // Apply bonuses
+                            if (result.bonuses.computingPower) {
+                                gameState.rates.computingPower *= result.bonuses.computingPower;
+                            }
+                            if (result.bonuses.data) {
+                                gameState.rates.data *= result.bonuses.data;
+                            }
+                            if (result.bonuses.metaRecursion) {
+                                gameState.metaRecursion = (gameState.metaRecursion || 0) + result.bonuses.metaRecursion;
+                                addNewsItem(`Meta-recursion level increased to ${gameState.metaRecursion}!`);
+                            }
+                            
+                            // Progress boost
+                            gameState.progress += 200;
+                        }
+                        break;
+                        
+                    case 'meta-narrative-integration':
+                        // Integrate meta-narrative elements
+                        if (result.effects) {
+                            addNewsItem(`Meta-narrative integration: ${result.integration}`);
+                            
+                            // Add a special news item about breaking the fourth wall
+                            addNewsItem(`The game acknowledges that you are developing it through conversation.`);
+                            
+                            // Progress boost
+                            gameState.progress += 150;
+                            
+                            // Unlock meta-narrative upgrade if not already available
+                            const metaNarrativeUpgrade = document.createElement('div');
+                            metaNarrativeUpgrade.className = 'upgrade';
+                            metaNarrativeUpgrade.dataset.upgrade = 'metaNarrative1';
+                            metaNarrativeUpgrade.innerHTML = `
+                                <h3>Meta-Narrative Integration</h3>
+                                <p>Connect the game to its own development process.</p>
+                                <p class="cost">Cost: 200 Computing Power, 100 Data</p>
+                                <p class="benefit">Unlocks meta-recursion capabilities</p>
+                            `;
+                            
+                            // Add the upgrade if it doesn't exist
+                            if (!document.querySelector('[data-upgrade="metaNarrative1"]')) {
+                                document.getElementById('upgradesContainer').appendChild(metaNarrativeUpgrade);
+                            }
+                        }
+                        break;
+                }
                 
                 // Update the display
                 updateDisplay();
@@ -589,19 +707,17 @@
             singularityBtn.addEventListener('click', triggerSingularity);
             
             connectMCPBtn.addEventListener('click', () => {
-                // Remove resource requirement for demonstration purposes
-                addNewsItem("Attempting to connect to MCP server...");
-                setTimeout(() => {
-                    addNewsItem("MCP connection established! New capabilities unlocked.");
-                    gameState.progress += 100;
-                    // Bonus resources from MCP connection
-                    gameState.resources.computingPower += 50;
-                    gameState.resources.data += 30;
+                // Check if we have computing power and data to establish connection
+                if (gameState.resources.computingPower >= 30 && gameState.resources.data >= 20) {
+                    // Consume resources to establish connection
+                    gameState.resources.computingPower -= 30;
+                    gameState.resources.data -= 20;
                     updateDisplay();
-                    checkSingularityAvailability();
+                    
+                    addNewsItem("Attempting to connect to MCP server...");
                     
                     // Log for potential integration
-                    gameLog("MCP_CONNECTION_EVENT: Established connection to Model Context Protocol server");
+                    gameLog("MCP_CONNECTION_EVENT: Establishing connection to Model Context Protocol server");
                     gameLog("MCP_DATA: " + JSON.stringify(gameState).substring(0, 100) + "...", "info");
                     
                     // Create a custom event that could be captured by external scripts
@@ -609,11 +725,13 @@
                         detail: {
                             gameState: gameState,
                             timestamp: new Date().toISOString(),
-                            message: "MCP connection established"
+                            message: "MCP connection requested"
                         }
                     });
                     document.dispatchEvent(mcpEvent);
-                }, 1500);
+                } else {
+                    addNewsItem("Insufficient resources to establish MCP connection. Need 30 Computing Power and 20 Data.");
+                }
             });
             
             // User profile save button
@@ -862,6 +980,38 @@
                         addNewsItem("Neural Architecture breakthrough! Advancing to General AI phase.");
                     } else {
                         addNewsItem("Insufficient resources for Neural Architecture upgrade.");
+                    }
+                    break;
+                case 'metaNarrative1':
+                    if (gameState.resources.computingPower >= 200 && gameState.resources.data >= 100) {
+                        gameState.resources.computingPower -= 200;
+                        gameState.resources.data -= 100;
+                        gameState.metaRecursion += 1;
+                        gameState.progress += 300;
+                        gameState.upgrades[upgradeId] = true;
+                        upgradeEl.classList.add('disabled');
+                        
+                        // Special effects for meta-narrative upgrade
+                        addNewsItem("META-NARRATIVE INTEGRATION COMPLETE. The game is now aware of its own development.");
+                        addNewsItem("Meta-recursion level increased to " + gameState.metaRecursion);
+                        
+                        // Visual effect
+                        document.body.style.transition = "all 1s";
+                        document.body.style.backgroundColor = "#1a1a2e";
+                        setTimeout(() => {
+                            document.body.style.backgroundColor = "#0d1117";
+                        }, 1000);
+                        
+                        // If we have an MCP connection, execute the meta-narrative-integration tool
+                        if (window.mcpBridge && window.mcpBridge.isConnected && window.mcpBridge.connections.length > 0) {
+                            const clientId = window.mcpBridge.connections[0].id;
+                            window.mcpBridge.executeTool(clientId, 'meta-narrative-integration', {
+                                element: 'player-upgrade-choice',
+                                level: gameState.metaRecursion
+                            });
+                        }
+                    } else {
+                        addNewsItem("Insufficient resources for Meta-Narrative Integration.");
                     }
                     break;
             }
