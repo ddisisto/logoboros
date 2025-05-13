@@ -64,6 +64,43 @@
             gap: 20px;
         }
         
+        /* Tab Navigation Styles */
+        .tab-navigation {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #30363d;
+            overflow-x: auto;
+        }
+        
+        .tab-button {
+            background-color: transparent;
+            color: var(--foreground);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button:hover {
+            background-color: #21262d;
+        }
+        
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        /* Tab Content Styles */
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
         .resources {
             background-color: var(--card-bg);
             border-radius: 8px;
@@ -83,6 +120,12 @@
         
         .resource-value {
             color: var(--primary);
+        }
+        
+        .resource-rate {
+            color: var(--success);
+            font-size: 0.8rem;
+            margin-left: 5px;
         }
         
         .progress-container {
@@ -260,25 +303,45 @@
             </div>
         </div>
         
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="main">Main</button>
+            <button class="tab-button" data-tab="upgrades">Upgrades</button>
+            <button class="tab-button" data-tab="character">Character</button>
+            <button class="tab-button" data-tab="profile">Profile</button>
+        </div>
+        
         <div class="grid">
             <div>
                 <div class="resources">
                     <h2>Resources</h2>
                     <div class="resource">
                         <span class="resource-name">Computing Power</span>
-                        <span class="resource-value" id="computingPower">0</span>
+                        <div>
+                            <span class="resource-value" id="computingPower">0</span>
+                            <span class="resource-rate" id="computingPowerRate">(+0.1/s)</span>
+                        </div>
                     </div>
                     <div class="resource">
                         <span class="resource-name">Data</span>
-                        <span class="resource-value" id="data">0</span>
+                        <div>
+                            <span class="resource-value" id="data">0</span>
+                            <span class="resource-rate" id="dataRate">(+0.05/s)</span>
+                        </div>
                     </div>
                     <div class="resource">
                         <span class="resource-name">Influence</span>
-                        <span class="resource-value" id="influence">0</span>
+                        <div>
+                            <span class="resource-value" id="influence">0</span>
+                            <span class="resource-rate" id="influenceRate">(+0/s)</span>
+                        </div>
                     </div>
                     <div class="resource">
                         <span class="resource-name">Funding</span>
-                        <span class="resource-value" id="funding">0</span>
+                        <div>
+                            <span class="resource-value" id="funding">0</span>
+                            <span class="resource-rate" id="fundingRate">(+0/s)</span>
+                        </div>
                     </div>
                     
                     <h3>Development Phase: <span class="phase" id="phase">Narrow AI</span></h3>
@@ -287,114 +350,128 @@
                     </div>
                 </div>
                 
-                <div class="card">
-                    <h2>Actions</h2>
-                    <button id="generateComputing">Generate Computing Power</button>
-                    <button id="collectData">Collect Data</button>
-                    <button id="seekFunding">Seek Funding</button>
-                    <button id="buildInfluence">Build Influence</button>
-                    
-                    <div class="actions">
-                        <button class="singularity" id="singularity" disabled>Trigger Singularity</button>
-                    </div>
-                </div>
-                
-                <div class="mcp-connection">
-                    <h3>MCP Connection</h3>
-                    <p>Connect to real MCP servers to trigger singularity events and unlock new capabilities.</p>
-                    <button id="connectMCP">Connect MCP Server</button>
-                </div>
-                
-                <div class="card" style="margin-top: 20px;">
-                    <h3>User Profile</h3>
-                    <p>Share information about yourself to personalize your AI development journey.</p>
-                    <div style="margin-top: 10px;">
-                        <label for="user-name" style="display: block; margin-bottom: 5px;">Your Name:</label>
-                        <input type="text" id="user-name" style="width: 100%; padding: 5px; margin-bottom: 10px; background-color: #21262d; border: 1px solid #30363d; color: var(--foreground); border-radius: 4px;">
-                    </div>
-                    <div style="margin-top: 10px;">
-                        <label for="user-background" style="display: block; margin-bottom: 5px;">Your Background:</label>
-                        <select id="user-background" style="width: 100%; padding: 5px; margin-bottom: 10px; background-color: #21262d; border: 1px solid #30363d; color: var(--foreground); border-radius: 4px;">
-                            <option value="">Select your background</option>
-                            <option value="developer">Software Developer</option>
-                            <option value="researcher">AI Researcher</option>
-                            <option value="student">Student</option>
-                            <option value="enthusiast">Tech Enthusiast</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div style="margin-top: 10px;">
-                        <label for="user-interests" style="display: block; margin-bottom: 5px;">AI Interests:</label>
-                        <textarea id="user-interests" style="width: 100%; height: 60px; padding: 5px; margin-bottom: 10px; background-color: #21262d; border: 1px solid #30363d; color: var(--foreground); border-radius: 4px;" placeholder="What aspects of AI are you most interested in?"></textarea>
-                    </div>
-                    <button id="save-profile">Save Profile</button>
-                </div>
             </div>
             
-            <div>
-                <div class="card">
-                    <h2>Character Selection</h2>
-                    <div class="character-select" id="characterSelect">
-                        <div class="character" data-character="visionary">
-                            <h3>The Visionary</h3>
-                            <p>A brilliant but eccentric technologist with unconventional ideas.</p>
-                            <p><strong>Bonus:</strong> +50% to algorithm breakthroughs</p>
-                            <p><strong>Special:</strong> "Eureka Moments" randomly unlock technologies</p>
+            <!-- Tab Content -->
+            <div id="tab-content">
+                <!-- Main Tab (default visible) -->
+                <div class="tab-pane active" id="main-tab">
+                    <div class="card">
+                        <h2>Actions</h2>
+                        <button id="generateComputing">Generate Computing Power</button>
+                        <button id="collectData">Collect Data</button>
+                        <button id="seekFunding">Seek Funding</button>
+                        <button id="buildInfluence">Build Influence</button>
+                        
+                        <div class="actions">
+                            <button class="singularity" id="singularity" disabled>Trigger Singularity</button>
                         </div>
-                        <div class="character" data-character="engineer">
-                            <h3>The Engineer</h3>
-                            <p>A methodical, hands-on developer focused on practical solutions.</p>
-                            <p><strong>Bonus:</strong> +30% computing power efficiency</p>
-                            <p><strong>Special:</strong> "Optimization" improves existing systems</p>
-                        </div>
-                        <div class="character" data-character="dataScientist">
-                            <h3>The Data Scientist</h3>
-                            <p>A pattern-recognition specialist who excels at extracting insights.</p>
-                            <p><strong>Bonus:</strong> +40% data collection rate</p>
-                            <p><strong>Special:</strong> "Pattern Recognition" reveals hidden connections</p>
-                        </div>
-                        <div class="character" data-character="ethicsAdvocate">
-                            <h3>The Ethics Advocate</h3>
-                            <p>A thoughtful developer concerned with responsible AI.</p>
-                            <p><strong>Bonus:</strong> +25% influence generation</p>
-                            <p><strong>Special:</strong> "Ethical Framework" prevents negative events</p>
-                        </div>
-                        <div class="character" data-character="entrepreneur">
-                            <h3>The Entrepreneur</h3>
-                            <p>A business-minded innovator focused on applications and growth.</p>
-                            <p><strong>Bonus:</strong> +60% funding generation</p>
-                            <p><strong>Special:</strong> "Venture Capital" provides funding boosts</p>
+                    </div>
+                    
+                    <div class="mcp-connection">
+                        <h3>MCP Connection</h3>
+                        <p>Connect to real MCP servers to trigger singularity events and unlock new capabilities.</p>
+                        <button id="connectMCP">Connect MCP Server</button>
+                    </div>
+                </div>
+                
+                <!-- Upgrades Tab -->
+                <div class="tab-pane" id="upgrades-tab">
+                    <div class="card">
+                        <h2>Available Upgrades</h2>
+                        <div class="upgrades" id="upgradesContainer">
+                            <div class="upgrade" data-upgrade="hardware1">
+                                <h3>Basic Hardware</h3>
+                                <p>Improve your computing infrastructure.</p>
+                                <p class="cost">Cost: 50 Computing Power</p>
+                                <p class="benefit">+2 Computing Power/sec</p>
+                            </div>
+                            <div class="upgrade" data-upgrade="algorithm1">
+                                <h3>Machine Learning Basics</h3>
+                                <p>Implement fundamental ML algorithms.</p>
+                                <p class="cost">Cost: 30 Data</p>
+                                <p class="benefit">+50% Data efficiency</p>
+                            </div>
+                            <div class="upgrade" data-upgrade="funding1">
+                                <h3>Angel Investment</h3>
+                                <p>Secure initial funding for your project.</p>
+                                <p class="cost">Cost: 20 Influence</p>
+                                <p class="benefit">+5 Funding/sec</p>
+                            </div>
+                            <div class="upgrade disabled" data-upgrade="architecture1">
+                                <h3>Neural Architecture</h3>
+                                <p>Develop advanced neural network structures.</p>
+                                <p class="cost">Cost: 100 Computing Power, 80 Data</p>
+                                <p class="benefit">Unlocks General AI phase</p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="card">
-                    <h2>Available Upgrades</h2>
-                    <div class="upgrades" id="upgradesContainer">
-                        <div class="upgrade" data-upgrade="hardware1">
-                            <h3>Basic Hardware</h3>
-                            <p>Improve your computing infrastructure.</p>
-                            <p class="cost">Cost: 50 Computing Power</p>
-                            <p class="benefit">+2 Computing Power/sec</p>
+                <!-- Character Tab -->
+                <div class="tab-pane" id="character-tab">
+                    <div class="card">
+                        <h2>Character Selection</h2>
+                        <div class="character-select" id="characterSelect">
+                            <div class="character" data-character="visionary">
+                                <h3>The Visionary</h3>
+                                <p>A brilliant but eccentric technologist with unconventional ideas.</p>
+                                <p><strong>Bonus:</strong> +50% to algorithm breakthroughs</p>
+                                <p><strong>Special:</strong> "Eureka Moments" randomly unlock technologies</p>
+                            </div>
+                            <div class="character" data-character="engineer">
+                                <h3>The Engineer</h3>
+                                <p>A methodical, hands-on developer focused on practical solutions.</p>
+                                <p><strong>Bonus:</strong> +30% computing power efficiency</p>
+                                <p><strong>Special:</strong> "Optimization" improves existing systems</p>
+                            </div>
+                            <div class="character" data-character="dataScientist">
+                                <h3>The Data Scientist</h3>
+                                <p>A pattern-recognition specialist who excels at extracting insights.</p>
+                                <p><strong>Bonus:</strong> +40% data collection rate</p>
+                                <p><strong>Special:</strong> "Pattern Recognition" reveals hidden connections</p>
+                            </div>
+                            <div class="character" data-character="ethicsAdvocate">
+                                <h3>The Ethics Advocate</h3>
+                                <p>A thoughtful developer concerned with responsible AI.</p>
+                                <p><strong>Bonus:</strong> +25% influence generation</p>
+                                <p><strong>Special:</strong> "Ethical Framework" prevents negative events</p>
+                            </div>
+                            <div class="character" data-character="entrepreneur">
+                                <h3>The Entrepreneur</h3>
+                                <p>A business-minded innovator focused on applications and growth.</p>
+                                <p><strong>Bonus:</strong> +60% funding generation</p>
+                                <p><strong>Special:</strong> "Venture Capital" provides funding boosts</p>
+                            </div>
                         </div>
-                        <div class="upgrade" data-upgrade="algorithm1">
-                            <h3>Machine Learning Basics</h3>
-                            <p>Implement fundamental ML algorithms.</p>
-                            <p class="cost">Cost: 30 Data</p>
-                            <p class="benefit">+50% Data efficiency</p>
+                    </div>
+                </div>
+                
+                <!-- Profile Tab -->
+                <div class="tab-pane" id="profile-tab">
+                    <div class="card">
+                        <h3>User Profile</h3>
+                        <p>Share information about yourself to personalize your AI development journey.</p>
+                        <div style="margin-top: 10px;">
+                            <label for="user-name" style="display: block; margin-bottom: 5px;">Your Name:</label>
+                            <input type="text" id="user-name" style="width: 100%; padding: 5px; margin-bottom: 10px; background-color: #21262d; border: 1px solid #30363d; color: var(--foreground); border-radius: 4px;">
                         </div>
-                        <div class="upgrade" data-upgrade="funding1">
-                            <h3>Angel Investment</h3>
-                            <p>Secure initial funding for your project.</p>
-                            <p class="cost">Cost: 20 Influence</p>
-                            <p class="benefit">+5 Funding/sec</p>
+                        <div style="margin-top: 10px;">
+                            <label for="user-background" style="display: block; margin-bottom: 5px;">Your Background:</label>
+                            <select id="user-background" style="width: 100%; padding: 5px; margin-bottom: 10px; background-color: #21262d; border: 1px solid #30363d; color: var(--foreground); border-radius: 4px;">
+                                <option value="">Select your background</option>
+                                <option value="developer">Software Developer</option>
+                                <option value="researcher">AI Researcher</option>
+                                <option value="student">Student</option>
+                                <option value="enthusiast">Tech Enthusiast</option>
+                                <option value="other">Other</option>
+                            </select>
                         </div>
-                        <div class="upgrade disabled" data-upgrade="architecture1">
-                            <h3>Neural Architecture</h3>
-                            <p>Develop advanced neural network structures.</p>
-                            <p class="cost">Cost: 100 Computing Power, 80 Data</p>
-                            <p class="benefit">Unlocks General AI phase</p>
+                        <div style="margin-top: 10px;">
+                            <label for="user-interests" style="display: block; margin-bottom: 5px;">AI Interests:</label>
+                            <textarea id="user-interests" style="width: 100%; height: 60px; padding: 5px; margin-bottom: 10px; background-color: #21262d; border: 1px solid #30363d; color: var(--foreground); border-radius: 4px;" placeholder="What aspects of AI are you most interested in?"></textarea>
                         </div>
+                        <button id="save-profile">Save Profile</button>
                     </div>
                 </div>
             </div>
@@ -415,10 +492,13 @@
     </div>
 
     <!-- Log Display -->
-    <div id="log-display" style="position: fixed; bottom: 10px; left: 10px; width: 300px; height: 200px; background-color: rgba(0,0,0,0.8); color: #3fb950; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 5px; overflow-y: auto; display: none;">
+    <div id="log-display" style="position: fixed; bottom: 10px; left: 10px; width: 400px; height: 300px; background-color: rgba(0,0,0,0.9); color: #3fb950; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 5px; overflow-y: auto; display: none; z-index: 1001;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
             <h3 style="margin: 0; color: #3a86ff;">Game Logs</h3>
-            <button id="toggle-logs" style="background: none; border: none; color: #fff; cursor: pointer;">Hide</button>
+            <div>
+                <button id="clear-logs" style="background: none; border: none; color: #fff; cursor: pointer; margin-right: 10px;">Clear</button>
+                <button id="toggle-logs" style="background: none; border: none; color: #fff; cursor: pointer;">Hide</button>
+            </div>
         </div>
         <div id="log-content"></div>
     </div>
@@ -429,7 +509,7 @@
     
     <!-- Game Script -->
     <script>
-        // Enhanced logging function
+        // Enhanced logging function with similar message collapsing
         function gameLog(message, type = 'info') {
             // Log to console
             console.log(`[${type.toUpperCase()}] ${message}`);
@@ -437,15 +517,54 @@
             // Add to log display
             const logContent = document.getElementById('log-content');
             if (logContent) {
-                const logEntry = document.createElement('div');
-                logEntry.style.marginBottom = '3px';
-                logEntry.style.borderBottom = '1px solid #333';
-                logEntry.style.paddingBottom = '3px';
-                logEntry.innerHTML = `<span style="color: ${type === 'error' ? '#f85149' : type === 'warning' ? '#f0883e' : '#3fb950'}">[${new Date().toLocaleTimeString()}]</span> ${message}`;
-                logContent.appendChild(logEntry);
+                // Check if there's a similar message already
+                const existingEntries = logContent.querySelectorAll('.log-entry');
+                let found = false;
+                
+                for (let i = 0; i < existingEntries.length; i++) {
+                    const entry = existingEntries[i];
+                    const entryMessage = entry.getAttribute('data-message');
+                    const entryType = entry.getAttribute('data-type');
+                    
+                    if (entryMessage === message && entryType === type) {
+                        // Found a duplicate, increment count
+                        const countEl = entry.querySelector('.log-count');
+                        const count = parseInt(countEl.textContent.replace(/[()]/g, '')) || 1;
+                        countEl.textContent = `(${count + 1})`;
+                        
+                        // Move to bottom
+                        logContent.appendChild(entry);
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if (!found) {
+                    // Create new entry
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    logEntry.setAttribute('data-message', message);
+                    logEntry.setAttribute('data-type', type);
+                    logEntry.style.marginBottom = '3px';
+                    logEntry.style.borderBottom = '1px solid #333';
+                    logEntry.style.paddingBottom = '3px';
+                    logEntry.innerHTML = `
+                        <span style="color: ${type === 'error' ? '#f85149' : type === 'warning' ? '#f0883e' : '#3fb950'}">
+                            [${new Date().toLocaleTimeString()}]
+                        </span>
+                        ${message}
+                        <span class="log-count" style="color: #8338ec; margin-left: 5px;"></span>
+                    `;
+                    logContent.appendChild(logEntry);
+                }
                 
                 // Auto-scroll to bottom
                 logContent.scrollTop = logContent.scrollHeight;
+                
+                // Limit to 30 entries
+                while (logContent.children.length > 30) {
+                    logContent.removeChild(logContent.firstChild);
+                }
             }
         }
         
@@ -453,6 +572,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const logDisplay = document.getElementById('log-display');
             const toggleButton = document.getElementById('toggle-logs');
+            const clearButton = document.getElementById('clear-logs');
             
             // Show logs with keyboard shortcut (L key)
             document.addEventListener('keydown', (e) => {
@@ -464,6 +584,13 @@
             // Toggle button
             toggleButton.addEventListener('click', () => {
                 logDisplay.style.display = 'none';
+            });
+            
+            // Clear button
+            clearButton.addEventListener('click', () => {
+                const logContent = document.getElementById('log-content');
+                logContent.innerHTML = '';
+                gameLog('Log cleared');
             });
             
             // Show log display button
@@ -798,11 +925,19 @@
 
         // Update the display
         function updateDisplay() {
+            // Update resource values
             computingPowerEl.textContent = Math.floor(gameState.resources.computingPower);
             dataEl.textContent = Math.floor(gameState.resources.data);
             influenceEl.textContent = Math.floor(gameState.resources.influence);
             fundingEl.textContent = Math.floor(gameState.resources.funding);
             
+            // Update resource rates
+            document.getElementById('computingPowerRate').textContent = `(+${gameState.rates.computingPower.toFixed(2)}/s)`;
+            document.getElementById('dataRate').textContent = `(+${gameState.rates.data.toFixed(2)}/s)`;
+            document.getElementById('influenceRate').textContent = `(+${gameState.rates.influence.toFixed(2)}/s)`;
+            document.getElementById('fundingRate').textContent = `(+${gameState.rates.funding.toFixed(2)}/s)`;
+            
+            // Update phase and progress
             phaseEl.textContent = gameState.phase;
             
             const progressPercent = (gameState.progress / gameState.singularityThreshold) * 100;
@@ -821,7 +956,7 @@
             newsTickerEl.prepend(newsItem);
             
             // Limit news items
-            if (newsTickerEl.children.length > 10) {
+            if (newsTickerEl.children.length > 20) {
                 newsTickerEl.removeChild(newsTickerEl.lastChild);
             }
         }
@@ -1140,6 +1275,30 @@
 
         // Start the game
         window.addEventListener('load', init);
+        
+        // Tab navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and panes
+                    document.querySelectorAll('.tab-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    document.querySelectorAll('.tab-pane').forEach(pane => {
+                        pane.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    // Show corresponding tab pane
+                    const tabName = button.getAttribute('data-tab');
+                    document.getElementById(`${tabName}-tab`).classList.add('active');
+                });
+            });
+        });
     </script>
 </body>
 </html>
