@@ -36,6 +36,12 @@ function initGame() {
             window.githubMetrics.init();
         }
         
+        // Initialize server bridge if available
+        if (window.serverBridge) {
+            console.log('Initializing server bridge...');
+            // Note: ServerBridge auto-initializes in its constructor
+        }
+        
         // TODO: Implement a lightweight task tracking system in the future
         // Following COMMIT_GUIDELINES.md for now
         
@@ -68,7 +74,8 @@ window.aiSingularity = {
     metricsFetcher: window.metricsFetcher,
     githubMetrics: window.githubMetrics,
     // todoCommitSystem removed - using manual process with COMMIT_GUIDELINES.md
-    metaDashboard: window.metaDashboard
+    metaDashboard: window.metaDashboard,
+    serverBridge: window.serverBridge
 };
 
 console.log('AI Singularity Game loaded');

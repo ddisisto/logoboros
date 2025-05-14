@@ -145,9 +145,19 @@ app.post('/api/clear-commands', (req, res) => {
   res.json({ success: true });
 });
 
+// Parse command-line arguments for port
+let PORT = process.env.PORT || 3000;
+const args = process.argv.slice(2);
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === '--port' && i + 1 < args.length) {
+    PORT = parseInt(args[i + 1], 10);
+    console.log(`Setting port from command line argument: ${PORT}`);
+    break;
+  }
+}
+
 // Start the server
-const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Claude MCP Server running at http://localhost:${PORT}`);
-  console.log('WebSocket server available at ws://localhost:${PORT}');
+  console.log(`WebSocket server available at ws://localhost:${PORT}`);
 });
