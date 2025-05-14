@@ -50,11 +50,20 @@ You can play the game online at [https://ddisisto.github.io/logoboros/](https://
 The game integrates with the Model Context Protocol (MCP), a standardized way to connect AI models to different data sources and tools. The MCP Bridge in the game:
 
 - Listens for connection events from the game
-- Simulates connections to MCP servers
+- Connects to real or simulated MCP servers
 - Provides capabilities back to the game
 - Displays connection status and event logs
 
-In future versions, this will allow for real connections to MCP servers, enabling the game to access external AI capabilities and data sources.
+### Meta-Game Concept
+
+The game also features a meta-game layer where:
+
+- Development of the game mirrors the in-game AI development process
+- Real Claude Code capabilities enhance the meta-narrative
+- The meta-state system tracks real-world development progress as game resources
+- Each development milestone represents a "singularity event" that advances capabilities
+
+This creates a recursive loop where the game tracks its own development progress as part of the game mechanics, providing a unique meta-narrative experience.
 
 ## Development
 
