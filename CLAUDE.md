@@ -22,7 +22,7 @@ This creates a fascinating recursive loop where:
 - Real capabilities (Claude Code) enhance the meta-narrative
 - The meta-state system tracks real-world progress as game resources
 - Each developer interaction represents a "singularity event" that advances capabilities
-- The TODO system directly connects to commit patterns, creating feedback loops
+- The TODO system directly connects to commit patterns: completed todos should trigger git commits, creating concrete feedback loops that advance the game state
 - User adopts character roles (The Visionary, The Engineer, etc.) for meta-game progression
 - Budget tracking and project phase management are incorporated into the meta-game
 
@@ -140,7 +140,7 @@ The game implements a self-improving system through several interconnected compo
 2. **Metrics Collection**: Real-world metrics from Claude tokens, file counts, and commits map to game resources
 3. **Claude Code Metrics**: Direct integration with Claude Code usage metrics via OpenTelemetry
 4. **GitHub Integration**: Repository activity directly impacts the game's influence resource
-5. **Commit Guidelines**: Manual process for task-commit integration following COMMIT_GUIDELINES.md
+5. **Commit Guidelines**: Manual process for task-commit integration following COMMIT_GUIDELINES.md, where todo completion MUST trigger git commits to advance the meta-game state
 6. **Proposal System**: Development initiatives tied to character classes and upgrades
 7. **Singularity Events**: Triggered by development patterns and milestones
 8. **Budget Tracking**: Project budget constraints translated into game mechanics
