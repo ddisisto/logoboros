@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logoboros Server Runner</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        h1 {
+            margin: 0;
+            color: #1a73e8;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-dot.connected {
+            background-color: #0f9d58;
+        }
+        .status-dot.disconnected {
+            background-color: #db4437;
+        }
+        .server-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .server-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        .server-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .server-title {
+            margin: 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .server-status {
+            font-size: 0.9em;
+            padding: 4px 8px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .server-status.running {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .server-status.stopped {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .server-info {
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .server-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .start-btn {
+            background-color: #0f9d58;
+            color: white;
+        }
+        .start-btn:hover:not(:disabled) {
+            background-color: #0b8043;
+        }
+        .stop-btn {
+            background-color: #db4437;
+            color: white;
+        }
+        .stop-btn:hover:not(:disabled) {
+            background-color: #c53929;
+        }
+        .view-logs-btn {
+            background-color: #1a73e8;
+            color: white;
+        }
+        .view-logs-btn:hover {
+            background-color: #1669d6;
+        }
+        .clear-logs-btn {
+            background-color: #f1f3f4;
+            color: #1a73e8;
+        }
+        .clear-logs-btn:hover {
+            background-color: #e8eaed;
+        }
+        .logs-container {
+            display: none;
+            margin-top: 15px;
+        }
+        .logs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .logs-content {
+            background-color: #272c34;
+            color: #e6e6e6;
+            border-radius: 4px;
+            padding: 12px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            overflow-y: auto;
+            height: 200px;
+            white-space: pre-wrap;
+        }
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85em;
+            color: #666;
+        }
+        .error-line {
+            color: #ff5353;
+        }
+        .info-line {
+            color: #7ee0ff;
+        }
+        .success-line {
+            color: #7eff9b;
+        }
+        .metrics-line {
+            color: #d7a2ff;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.85em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Logoboros Server Runner</h1>
+            <div class="status-indicator">
+                <div id="status-dot" class="status-dot connected"></div>
+                <span id="status-text">Connected</span>
+            </div>
+        </header>
+
+        <div id="server-grid" class="server-grid">
+            <!-- Server cards will be dynamically added here -->
+            <div class="server-card">
+                <div class="server-header">
+                    <h2 class="server-title">Loading servers...</h2>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Logoboros Server Runner | No External Dependencies | <a href="https://github.com/ddisisto/logoboros" target="_blank">GitHub Repository</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // State for tracking servers
+        let serverData = {};
+        let logIntervals = {};
+        let connected = true;
+
+        // Update the status indicator
+        function updateStatusIndicator() {
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            
+            if (connected) {
+                statusDot.className = 'status-dot connected';
+                statusText.textContent = 'Connected';
+            } else {
+                statusDot.className = 'status-dot disconnected';
+                statusText.textContent = 'Disconnected';
+            }
+        }
+
+        // Load server information from the API
+        async function loadServers() {
+            try {
+                const response = await fetch('/api/servers');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch servers');
+                }
+                
+                connected = true;
+                serverData = await response.json();
+                renderServerGrid();
+            } catch (error) {
+                console.error('Error loading servers:', error);
+                connected = false;
+                
+                // Show error state in the grid
+                const grid = document.getElementById('server-grid');
+                grid.innerHTML = `
+                    <div class="server-card">
+                        <div class="server-header">
+                            <h2 class="server-title">Connection Error</h2>
+                        </div>
+                        <div class="server-info">
+                            Failed to connect to the server runner. Please check that it's running.
+                        </div>
+                        <div class="server-controls">
+                            <button class="view-logs-btn" onclick="loadServers()">Retry Connection</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            updateStatusIndicator();
+        }
+
+        // Render the server grid with current data
+        function renderServerGrid() {
+            const grid = document.getElementById('server-grid');
+            grid.innerHTML = '';
+            
+            for (const [id, info] of Object.entries(serverData)) {
+                const card = document.createElement('div');
+                card.className = 'server-card';
+                
+                card.innerHTML = `
+                    <div class="server-header">
+                        <h2 class="server-title">${info.name}</h2>
+                        <div class="server-status ${info.running ? 'running' : 'stopped'}">
+                            ${info.running ? 'Running' : 'Stopped'}
+                        </div>
+                    </div>
+                    <div class="server-info">
+                        <div>ID: ${id}</div>
+                        <div>Script: ${info.script}</div>
+                        <div>Port: ${info.port}</div>
+                    </div>
+                    <div class="server-controls">
+                        <button class="start-btn" onclick="startServer('${id}')" ${info.running ? 'disabled' : ''}>
+                            Start
+                        </button>
+                        <button class="stop-btn" onclick="stopServer('${id}')" ${!info.running ? 'disabled' : ''}>
+                            Stop
+                        </button>
+                        <button class="view-logs-btn" onclick="toggleLogs('${id}')">
+                            View Logs
+                        </button>
+                        <button class="clear-logs-btn" onclick="clearLogs('${id}')">
+                            Clear
+                        </button>
+                    </div>
+                    <div id="logs-container-${id}" class="logs-container">
+                        <div class="logs-header">
+                            <h3>Server Logs</h3>
+                            <div class="auto-refresh">
+                                <input type="checkbox" id="auto-refresh-${id}" checked>
+                                <label for="auto-refresh-${id}">Auto-refresh</label>
+                            </div>
+                        </div>
+                        <div id="logs-content-${id}" class="logs-content">No logs available</div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            }
+        }
+
+        // Start a server
+        async function startServer(id) {
+            try {
+                const response = await fetch(`/api/servers/${id}/start`, {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to start server');
+                }
+                
+                // Update the server status
+                serverData[id].running = true;
+                renderServerGrid();
+                
+                // Automatically show logs
+                toggleLogs(id, true);
+            } catch (error) {
+                console.error(`Error starting server ${id}:`, error);
+                alert(`Failed to start server ${id}: ${error.message}`);
+            }
+        }
+
+        // Stop a server
+        async function stopServer(id) {
+            try {
+                const response = await fetch(`/api/servers/${id}/stop`, {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to stop server');
+                }
+                
+                // Update the server status
+                serverData[id].running = false;
+                renderServerGrid();
+            } catch (error) {
+                console.error(`Error stopping server ${id}:`, error);
+                alert(`Failed to stop server ${id}: ${error.message}`);
+            }
+        }
+
+        // Toggle logs visibility
+        function toggleLogs(id, forceShow = false) {
+            const logsContainer = document.getElementById(`logs-container-${id}`);
+            const isHidden = logsContainer.style.display === 'none' || logsContainer.style.display === '';
+            
+            if (isHidden || forceShow) {
+                logsContainer.style.display = 'block';
+                updateLogs(id);
+                
+                // Start auto-refresh if enabled
+                if (document.getElementById(`auto-refresh-${id}`).checked) {
+                    if (logIntervals[id]) {
+                        clearInterval(logIntervals[id]);
+                    }
+                    logIntervals[id] = setInterval(() => updateLogs(id), 2000);
+                }
+            } else {
+                logsContainer.style.display = 'none';
+                
+                // Clear auto-refresh interval
+                if (logIntervals[id]) {
+                    clearInterval(logIntervals[id]);
+                    delete logIntervals[id];
+                }
+            }
+        }
+
+        // Update logs for a server
+        async function updateLogs(id) {
+            // Only fetch logs if auto-refresh is enabled or if it's the first time
+            const autoRefresh = document.getElementById(`auto-refresh-${id}`);
+            if (!autoRefresh.checked && logIntervals[id]) {
+                clearInterval(logIntervals[id]);
+                delete logIntervals[id];
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/servers/${id}/logs`);
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        // No logs yet, not an error
+                        return;
+                    }
+                    throw new Error('Failed to fetch logs');
+                }
+                
+                const data = await response.json();
+                const logsContent = document.getElementById(`logs-content-${id}`);
+                
+                if (data.logs && data.logs.length > 0) {
+                    // Format logs with colors
+                    let formattedLogs = '';
+                    data.logs.forEach(log => {
+                        if (log.includes('ERROR')) {
+                            formattedLogs += `<div class="error-line">${log}</div>`;
+                        } else if (log.includes('Server started') || log.includes('running')) {
+                            formattedLogs += `<div class="success-line">${log}</div>`;
+                        } else if (log.includes('Updated mock metrics')) {
+                            formattedLogs += `<div class="metrics-line">${log}</div>`;
+                        } else {
+                            formattedLogs += `<div>${log}</div>`;
+                        }
+                    });
+                    
+                    logsContent.innerHTML = formattedLogs;
+                    
+                    // Auto-scroll to bottom
+                    logsContent.scrollTop = logsContent.scrollHeight;
+                } else {
+                    logsContent.textContent = 'No logs available';
+                }
+            } catch (error) {
+                console.error(`Error fetching logs for server ${id}:`, error);
+            }
+        }
+
+        // Clear logs for a server
+        async function clearLogs(id) {
+            try {
+                const response = await fetch(`/api/servers/${id}/logs/clear`, {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to clear logs');
+                }
+                
+                const logsContent = document.getElementById(`logs-content-${id}`);
+                logsContent.textContent = 'Logs cleared';
+            } catch (error) {
+                console.error(`Error clearing logs for server ${id}:`, error);
+                alert(`Failed to clear logs for server ${id}: ${error.message}`);
+            }
+        }
+
+        // Handle auto-refresh toggle
+        document.addEventListener('change', function(event) {
+            if (event.target.id.startsWith('auto-refresh-')) {
+                const id = event.target.id.replace('auto-refresh-', '');
+                
+                if (event.target.checked) {
+                    // Start auto-refresh
+                    if (logIntervals[id]) {
+                        clearInterval(logIntervals[id]);
+                    }
+                    updateLogs(id);
+                    logIntervals[id] = setInterval(() => updateLogs(id), 2000);
+                } else {
+                    // Stop auto-refresh
+                    if (logIntervals[id]) {
+                        clearInterval(logIntervals[id]);
+                        delete logIntervals[id];
+                    }
+                }
+            }
+        });
+
+        // Initial load
+        loadServers();
+        
+        // Refresh server list every 5 seconds
+        setInterval(loadServers, 5000);
+    </script>
+</body>
+</html>
