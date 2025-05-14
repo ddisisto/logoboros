@@ -75,26 +75,36 @@ The project follows a modular architecture with separated concerns:
 project/
 ├── css/
 │   └── main.css          # Core styles
+├── docs/
+│   ├── CONCEPT.md        # Game concept and design
+│   ├── MCP.md            # Model Context Protocol reference
+│   ├── ARCHITECTURE.md   # System architecture
+│   ├── NARRATIVE.md      # Character and narrative information
+│   └── METRICS.md        # Game metrics and balancing
 ├── js/
 │   ├── core/
 │   │   ├── events.js     # Event bus system
 │   │   ├── state.js      # State management
-│   │   └── game.js       # Game logic and loop
+│   │   ├── game.js       # Game logic and loop
+│   │   ├── logger.js     # Enhanced logging system
+│   │   ├── meta-state.js # Meta-game state tracking
+│   │   └── metrics-fetcher.js # Real-world metrics collection
 │   ├── ui/
 │   │   ├── renderer.js   # UI rendering
-│   │   └── interactions.js # User interactions
+│   │   ├── interactions.js # User interactions
+│   │   └── meta-dashboard.js # Meta-game UI
 │   ├── mcp/
-│   │   └── interface.js  # MCP communication
+│   │   ├── interface.js  # MCP communication
+│   │   └── claude-client.js # Claude Code communication
 │   └── main.js           # Main entry point
+├── GAMESTATE.json        # Meta-game state tracking
 ├── index.html            # Main HTML structure
 ├── mcp-server.js         # MCP server implementation
+├── claude-mcp-server.js  # Claude MCP server
 ├── bridge.js             # MCP bridge implementation
-├── REFACTORING.md        # Refactoring roadmap
-├── IDEA.md               # Game concept and design document
-├── MCP.md                # Information about the Model Context Protocol
-├── ENVIRONMENT.md        # Environment setup information
-├── IDENTITY.md           # Character and narrative information
-└── metrics.md            # Game metrics and balancing information
+├── CLAUDE.md             # Claude Code guidance
+├── FILE_STRUCTURE_PROPOSAL.md # Documentation organization
+└── README.md             # This file
 ```
 
 ### Technologies Used

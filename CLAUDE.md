@@ -110,11 +110,11 @@ The game integrates with the Model Context Protocol (MCP), a standardized way to
 ## Related Documentation
 
 - [README.md](README.md) - Main game documentation and setup instructions
-- [IDEA.md](IDEA.md) - Detailed game concept and design document
-- [MCP.md](MCP.md) - Information about the Model Context Protocol
-- [IDENTITY.md](IDENTITY.md) - Character/narrative meta-information
-- [metrics.md](metrics.md) - Game metrics and balancing information
-- [REFACTORING.md](REFACTORING.md) - Refactoring roadmap and architecture guidelines
+- [CONCEPT.md](docs/CONCEPT.md) - Detailed game concept and design document
+- [MCP.md](docs/MCP.md) - Information about the Model Context Protocol
+- [NARRATIVE.md](docs/NARRATIVE.md) - Character/narrative meta-information
+- [METRICS.md](docs/METRICS.md) - Game metrics and balancing information
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Architecture design and refactoring guidelines
 - [FILE_STRUCTURE_PROPOSAL.md](FILE_STRUCTURE_PROPOSAL.md) - Documentation organization plan
 
 ## URL Reference
