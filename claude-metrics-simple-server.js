@@ -67,13 +67,21 @@ const server = http.createServer((req, res) => {
   }
 });
 
-// Set port
-const port = 3000;
+// Parse command-line arguments for port
+let port = process.env.PORT || 3000;
+const args = process.argv.slice(2);
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === '--port' && i + 1 < args.length) {
+    port = parseInt(args[i + 1], 10);
+    console.log(`Setting port from command line argument: ${port}`);
+    break;
+  }
+}
 
 // Start server
 server.listen(port, () => {
   console.log(`Claude metrics simple server running at http://localhost:${port}`);
-  console.log('Access metrics at: http://localhost:3000/claude-metrics');
+  console.log(`Access metrics at: http://localhost:${port}/claude-metrics`);
   console.log('Press Ctrl+C to stop');
 });
 
