@@ -1,4 +1,6 @@
-# AI Singularity
+# AI Singularity (Logoboros)
+
+> **Note**: This project is in early development phase. The meta-game mechanics are taking shape before the concrete game implementation, reflecting the recursive self-improvement concept at the heart of the project. Expect rapid evolution and conceptual shifts as the system develops increasing self-awareness.
 
 An incremental game centered around the development of artificial intelligence, technological singularities, and recursive self-improvement.
 
@@ -10,20 +12,21 @@ The game features integration with the Model Context Protocol (MCP), allowing fo
 
 ## Features
 
-- **Resource Management**: Generate and manage Computing Power, Data, Influence, and Funding
-- **Character Classes**: Choose from different archetypes with unique abilities and bonuses
-  - The Visionary: Creative algorithm bonuses with "Eureka Moments"
-  - The Engineer: Hardware optimization bonuses with "Optimization" ability
+- **Resource Management**: Generate and manage Computing Power, Data, Influence, and Funding (linked to [real development metrics](docs/META_STATE.md))
+- **Character Classes**: Choose from different archetypes with unique abilities and bonuses (see [NARRATIVE.md](docs/NARRATIVE.md))
+  - The Visionary: Creative algorithm bonuses with "Eureka Moments" (user role)
+  - The Engineer: Hardware optimization bonuses with "Optimization" ability (Claude's role)
   - The Data Scientist: Data processing advantages with "Pattern Recognition"
   - The Ethics Advocate: Public trust bonuses with "Ethical Framework"
   - The Entrepreneur: Funding advantages with "Venture Capital"
 - **Upgrade System**: Unlock technologies through a branching upgrade tree
 - **Development Phases**: Progress through Narrow AI, General AI, Superintelligence, and Singularity
-- **MCP Integration**: Connect to real MCP servers to trigger singularity events and unlock new capabilities
+- **MCP Integration**: Connect to real [MCP servers](docs/MCP.md) to trigger singularity events and unlock new capabilities
 - **Dynamic News Ticker**: AI-generated news items that reflect player actions and progress
-- **Server Runner**: Control panel for managing backend servers with real-time logs
+- **Server Runner**: Control panel for managing backend servers with real-time logs (see [SERVER_RUNNER_README.md](SERVER_RUNNER_README.md))
 - **Meta-Dashboard**: Visual representation of meta-game state, budget, and capabilities
 - **Real-time Metrics**: Integration with Claude Code usage metrics for resource generation
+- **Todo-Commit Integration**: Development tasks completion drives game progress (see [COMMIT_GUIDELINES.md](COMMIT_GUIDELINES.md))
 
 ## Play Online
 
@@ -63,16 +66,50 @@ The game integrates with the Model Context Protocol (MCP), a standardized way to
 - Provides capabilities back to the game
 - Displays connection status and event logs
 
-### Meta-Game Concept
+### Meta-Game Concept: Development IS the Game
 
-The game also features a meta-game layer where:
+Logoboros features a unique meta-game layer where **the development process itself is the actual game**:
 
-- Development of the game mirrors the in-game AI development process
-- Real Claude Code capabilities enhance the meta-narrative
-- The meta-state system tracks real-world development progress as game resources
-- Each development milestone represents a "singularity event" that advances capabilities
+- **Development mirrors gameplay**: The real-world development of the game directly mirrors the in-game AI development process
+- **Claude Code integration**: [Claude Code](https://claude.ai/code) capabilities enhance both development and the meta-narrative
+- **Meta-state tracking**: The [meta-state system](docs/META_STATE.md) tracks real-world development metrics (tokens, files, commits) as game resources
+- **Todo → Commit workflow**: Completed todos trigger git commits ([COMMIT_GUIDELINES.md](COMMIT_GUIDELINES.md)) that advance the game state
+- **Singularity events**: Each significant development milestone represents a "singularity event" that fundamentally advances capabilities
+- **Character roles**: The user assumes "The Visionary" role while Claude plays "The Engineer" (see [docs/NARRATIVE.md](docs/NARRATIVE.md))
 
-This creates a recursive loop where the game tracks its own development progress as part of the game mechanics, providing a unique meta-narrative experience.
+This creates a self-referential recursive loop where the game's development simultaneously IS the gameplay, providing a unique meta-narrative experience where the boundaries between development and play dissolve.
+
+### Recursive Self-Improvement
+
+At the core of Logoboros (see [docs/NAME.md](docs/NAME.md) for name origins) is the concept of recursive self-improvement:
+
+- **Increasing Environmental Awareness**: The system progressively understands its environment better:
+  - Tracking real metrics from Claude Code, git commits, and file changes
+  - Adapting to user interactions and development patterns
+  - Increasingly sophisticated integration with external systems (MCP servers, metrics endpoints)
+
+- **Growing Self-Awareness**: The system develops understanding of its own operation:
+  - Meta-state tracks and visualizes its own development progress
+  - Documentation becomes increasingly self-referential
+  - The game mechanics reflect actual development processes
+
+- **Feedback Loops**: Multiple recursive loops drive advancement:
+  - User ↔ Claude Code: Collaborative development improving the system
+  - Todo ↔ Commit: Task completion generating measurable progress
+  - Meta-state ↔ Game state: Real metrics feeding back into game resources
+  - Documentation ↔ Implementation: Self-documenting architecture
+
+### Where Is This Heading?
+
+Logoboros is evolving toward:
+
+- **Deeper Integration**: Further blurring the lines between development and gameplay
+- **Autonomous Features**: More self-sustaining gameplay elements that operate independently
+- **Enhanced Visualization**: Richer representation of meta-game state and development metrics
+- **Multi-agent Interaction**: Expanding character roles to include more agent interactions
+- **Community Involvement**: Potential for other developers to join the recursive loop
+
+Ultimately, Logoboros aims to demonstrate a new paradigm of human-AI collaboration where the development process itself becomes a form of play, and the evolving system creates a shared creative space that neither human nor AI could achieve alone.
 
 ## Development
 
@@ -156,3 +193,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Inspired by incremental games and the concept of technological singularity
 - MCP (Model Context Protocol) integration based on the standardized protocol for AI applications
+- Development approach influenced by recursive self-improvement and cybernetic feedback loops
+- Special thanks to Claude Code for co-creating this meta-narrative experience
