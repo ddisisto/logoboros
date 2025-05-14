@@ -27,6 +27,24 @@ function initGame() {
         // Set up user interactions
         window.userInteractions.init();
         
+        // Initialize meta-state components
+        if (window.metricsFetcher) {
+            window.metricsFetcher.init();
+        }
+        
+        if (window.githubMetrics) {
+            window.githubMetrics.init();
+        }
+        
+        if (window.todoCommitSystem) {
+            window.todoCommitSystem.init();
+        }
+        
+        // Initialize meta-dashboard
+        if (window.metaDashboard) {
+            window.metaDashboard.init();
+        }
+        
         // Finally initialize the game
         window.game.init();
         
@@ -46,7 +64,12 @@ window.aiSingularity = {
     game: window.game,
     uiRenderer: window.uiRenderer,
     userInteractions: window.userInteractions,
-    mcpInterface: window.mcpInterface
+    mcpInterface: window.mcpInterface,
+    metaState: window.metaStateManager,
+    metricsFetcher: window.metricsFetcher,
+    githubMetrics: window.githubMetrics,
+    todoCommitSystem: window.todoCommitSystem,
+    metaDashboard: window.metaDashboard
 };
 
 console.log('AI Singularity Game loaded');
