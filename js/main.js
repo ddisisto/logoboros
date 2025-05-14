@@ -21,8 +21,7 @@ function initGame() {
         // First initialize the MCP interface
         window.mcpInterface.init();
         
-        // Then initialize the UI renderer
-        window.uiRenderer.init();
+        // UI initialization is now handled later in the process
         
         // Set up user interactions
         window.userInteractions.init();
@@ -50,6 +49,14 @@ function initGame() {
             window.metaDashboard.init();
         }
         
+        // Initialize unified dashboard if available
+        if (window.unifiedDashboard) {
+            window.unifiedDashboard.init();
+        } else {
+            // If unified dashboard is not available, use the original renderer
+            window.uiRenderer.init();
+        }
+        
         // Finally initialize the game
         window.game.init();
         
@@ -75,6 +82,7 @@ window.aiSingularity = {
     githubMetrics: window.githubMetrics,
     // todoCommitSystem removed - using manual process with COMMIT_GUIDELINES.md
     metaDashboard: window.metaDashboard,
+    unifiedDashboard: window.unifiedDashboard,
     serverBridge: window.serverBridge
 };
 

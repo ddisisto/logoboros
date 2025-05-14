@@ -3,248 +3,881 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI Singularity - An incremental game about AI development, technological singularities, and recursive self-improvement.">
+    <meta name="description" content="Logoboros - A meta-recursive AI development game that tracks its own evolution">
     
     <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="AI Singularity - An Incremental Game">
-    <meta property="og:description" content="Guide the evolution of AI systems through various stages of development, unlocking new capabilities and reaching singularity events.">
+    <meta property="og:title" content="Logoboros - Meta-Recursive AI Game">
+    <meta property="og:description" content="A self-referential game where real-world development becomes part of the gameplay mechanics">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ddisisto.github.io/logoboros/">
     
-    <title>AI Singularity - An Incremental Game</title>
+    <title>Logoboros - Meta-Recursive AI Game</title>
     
-    <!-- External CSS -->
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/meta-dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/server.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>AI Singularity</h1>
-            <p class="subtitle">An Incremental Game of AI Development and Technological Transcendence</p>
+    <div class="unified-dashboard">
+        <!-- HEADER -->
+        <header class="dashboard-header">
+            <div class="dashboard-title">
+                <img src="assets/logoboros-logo.svg" alt="Logoboros" class="logo" onerror="this.src=''; this.alt='Logoboros'">
+                <span>Logoboros</span>
+            </div>
+            <div class="header-controls">
+                <span class="phase-indicator-mini">
+                    <span class="phase-label">Phase:</span>
+                    <span class="phase-value" id="header-phase">Early General AI</span>
+                </span>
+                <button id="toggle-meta-view" class="header-control-button">
+                    <span class="control-icon">🔍</span>
+                    <span class="control-text">Meta View</span>
+                </button>
+                <button id="refresh-metrics" class="header-control-button">
+                    <span class="control-icon">↻</span>
+                    <span class="control-text">Refresh Metrics</span>
+                </button>
+                <button id="trigger-singularity" class="header-control-button singularity-btn" disabled>
+                    <span class="control-icon">✨</span>
+                    <span class="control-text">Trigger Singularity</span>
+                </button>
+            </div>
         </header>
-        
-        <div class="news-ticker" id="newsTicker">
-            <div class="news-item">
-                <span class="timestamp">00:00:00</span>
-                <span>Welcome to AI Singularity. Your journey begins now.</span>
-            </div>
-        </div>
-        
-        <!-- Character Selection Screen (Entry Screen) -->
-        <div id="character-selection-screen" class="entry-screen">
-            <div class="opening-screen">
-                <h2>Welcome to AI Singularity</h2>
-                <p class="intro-text">Choose your character to begin your journey into AI development and technological transcendence.</p>
-                
-                <div class="character-select" id="characterSelect">
-                    <div class="character" data-character="visionary">
-                        <h3>The Visionary</h3>
-                        <p>A brilliant but eccentric technologist with unconventional ideas.</p>
-                        <p><strong>Bonus:</strong> +50% to algorithm breakthroughs</p>
-                        <p><strong>Special:</strong> "Eureka Moments" randomly unlock technologies</p>
-                    </div>
-                    <div class="character" data-character="engineer">
-                        <h3>The Engineer</h3>
-                        <p>A methodical, hands-on developer focused on practical solutions.</p>
-                        <p><strong>Bonus:</strong> +30% computing power efficiency</p>
-                        <p><strong>Special:</strong> "Optimization" improves existing systems</p>
-                    </div>
-                    <div class="character" data-character="dataScientist">
-                        <h3>The Data Scientist</h3>
-                        <p>A pattern-recognition specialist who excels at extracting insights.</p>
-                        <p><strong>Bonus:</strong> +40% data collection rate</p>
-                        <p><strong>Special:</strong> "Pattern Recognition" reveals hidden connections</p>
-                    </div>
-                    <div class="character" data-character="ethicsAdvocate">
-                        <h3>The Ethics Advocate</h3>
-                        <p>A thoughtful developer concerned with responsible AI.</p>
-                        <p><strong>Bonus:</strong> +25% influence generation</p>
-                        <p><strong>Special:</strong> "Ethical Framework" prevents negative events</p>
-                    </div>
-                    <div class="character" data-character="entrepreneur">
-                        <h3>The Entrepreneur</h3>
-                        <p>A business-minded innovator focused on applications and growth.</p>
-                        <p><strong>Bonus:</strong> +60% funding generation</p>
-                        <p><strong>Special:</strong> "Venture Capital" provides funding boosts</p>
-                    </div>
-                </div>
-                
-                <div class="start-instructions">
-                    <p>Click on a character to select it and begin your AI development journey.</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- Main Game UI (Hidden until character is selected) -->
-        <div id="game-ui" style="display: none;">
-            <!-- Tab Navigation -->
-            <div class="tab-navigation">
-                <button class="tab-button active" data-tab="main">Main</button>
-                <button class="tab-button" data-tab="upgrades">Upgrades</button>
-                <button class="tab-button" data-tab="profile">Profile</button>
-            </div>
-        
-        <div class="grid">
-            <div>
-                <div class="resources">
-                    <h2>Resources</h2>
-                    <div class="resource">
-                        <span class="resource-name">Computing Power</span>
-                        <div>
-                            <span class="resource-value" id="computingPower">0</span>
-                            <span class="resource-rate" id="computingPowerRate">(+0.1/s)</span>
+        <!-- SIDEBAR -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-section-title">Development Phase</h3>
+                <div id="phase-indicator" class="phase-indicator">
+                    <div class="phase-bar">
+                        <div class="phase-segment" data-phase="narrow">
+                            <div class="phase-segment-fill" style="width: 100%"></div>
+                        </div>
+                        <div class="phase-segment" data-phase="general">
+                            <div class="phase-segment-fill" style="width: 30%"></div>
+                        </div>
+                        <div class="phase-segment" data-phase="super">
+                            <div class="phase-segment-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="phase-segment" data-phase="singularity">
+                            <div class="phase-segment-fill" style="width: 0%"></div>
                         </div>
                     </div>
-                    <div class="resource">
-                        <span class="resource-name">Data</span>
-                        <div>
-                            <span class="resource-value" id="data">0</span>
-                            <span class="resource-rate" id="dataRate">(+0.05/s)</span>
-                        </div>
+                    <div class="phase-labels">
+                        <span>Narrow</span>
+                        <span>General</span>
+                        <span>Super</span>
+                        <span>Singularity</span>
                     </div>
-                    <div class="resource">
-                        <span class="resource-name">Influence</span>
-                        <div>
-                            <span class="resource-value" id="influence">0</span>
-                            <span class="resource-rate" id="influenceRate">(+0/s)</span>
-                        </div>
-                    </div>
-                    <div class="resource">
-                        <span class="resource-name">Funding</span>
-                        <div>
-                            <span class="resource-value" id="funding">0</span>
-                            <span class="resource-rate" id="fundingRate">(+0/s)</span>
-                        </div>
-                    </div>
-                    
-                    <h3>Development Phase: <span class="phase" id="phase">Narrow AI</span></h3>
-                    <div class="progress-container">
-                        <div class="progress-bar" id="progressBar"></div>
-                    </div>
+                    <div class="phase-current">Early General AI</div>
                 </div>
-                
             </div>
             
-            <!-- Tab Content -->
-            <div id="tab-content">
-                <!-- Main Tab -->
-                <div class="tab-pane" id="main-tab">
-                    <div class="card">
-                        <h2>Actions</h2>
-                        <button id="generateComputing">Generate Computing Power</button>
-                        <button id="collectData">Collect Data</button>
-                        <button id="seekFunding">Seek Funding</button>
-                        <button id="buildInfluence">Build Influence</button>
-                        
-                        <div class="actions">
-                            <button class="singularity" id="singularity" disabled>Trigger Singularity</button>
+            <div class="sidebar-section">
+                <h3 class="sidebar-section-title">Character</h3>
+                <div id="character-summary" class="character-summary">
+                    <div class="character-icon">⚙️</div>
+                    <div class="character-details">
+                        <div class="character-name">The Engineer</div>
+                        <div class="character-role text-secondary">Claude - Practical implementation</div>
+                        <div class="character-level">Level 2</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3 class="sidebar-section-title">Navigation</h3>
+                <nav class="sidebar-nav">
+                    <div class="sidebar-nav-item active" data-section="resources">
+                        <span class="sidebar-icon">📊</span>
+                        <span>Resources</span>
+                    </div>
+                    <div class="sidebar-nav-item" data-section="servers">
+                        <span class="sidebar-icon">🖥️</span>
+                        <span>Servers</span>
+                    </div>
+                    <div class="sidebar-nav-item" data-section="upgrades">
+                        <span class="sidebar-icon">⬆️</span>
+                        <span>Upgrades</span>
+                    </div>
+                    <div class="sidebar-nav-item" data-section="capabilities">
+                        <span class="sidebar-icon">🔬</span>
+                        <span>Capabilities</span>
+                    </div>
+                    <div class="sidebar-nav-item" data-section="terminal">
+                        <span class="sidebar-icon">💻</span>
+                        <span>Terminal</span>
+                    </div>
+                    <div class="sidebar-nav-item" data-section="news">
+                        <span class="sidebar-icon">📰</span>
+                        <span>News</span>
+                    </div>
+                    <div class="sidebar-nav-item" data-section="logs">
+                        <span class="sidebar-icon">📝</span>
+                        <span>Logs</span>
+                    </div>
+                </nav>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3 class="sidebar-section-title">Resources</h3>
+                <div id="resource-summary" class="resource-summary">
+                    <!-- Will be filled dynamically by resource visualization -->
+                    <div class="sidebar-resource">
+                        <span class="sidebar-resource-icon">🖥️</span>
+                        <span class="sidebar-resource-name">Computing Power:</span>
+                        <span class="sidebar-resource-value">1.2k</span>
+                    </div>
+                    <div class="sidebar-resource">
+                        <span class="sidebar-resource-icon">📊</span>
+                        <span class="sidebar-resource-name">Data:</span>
+                        <span class="sidebar-resource-value">845</span>
+                    </div>
+                    <div class="sidebar-resource">
+                        <span class="sidebar-resource-icon">🌐</span>
+                        <span class="sidebar-resource-name">Influence:</span>
+                        <span class="sidebar-resource-value">Growing</span>
+                    </div>
+                    <div class="sidebar-resource">
+                        <span class="sidebar-resource-icon">💰</span>
+                        <span class="sidebar-resource-name">Funding:</span>
+                        <span class="sidebar-resource-value">215</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3 class="sidebar-section-title">Meta Info</h3>
+                <div class="meta-stats">
+                    <div class="meta-stat-item">
+                        <span class="meta-stat-label">Singularity events:</span>
+                        <span class="meta-stat-value">3</span>
+                    </div>
+                    <div class="meta-stat-item">
+                        <span class="meta-stat-label">Capabilities:</span>
+                        <span class="meta-stat-value">7</span>
+                    </div>
+                    <div class="meta-stat-item">
+                        <span class="meta-stat-label">Claude tokens:</span>
+                        <span class="meta-stat-value">234k</span>
+                    </div>
+                    <div class="meta-stat-item">
+                        <span class="meta-stat-label">Lines modified:</span>
+                        <span class="meta-stat-value">1.5k</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="dashboard-main">
+            <!-- RESOURCES SECTION -->
+            <section class="dashboard-section active" id="resources-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Resources</h2>
+                        <div class="card-controls">
+                            <button id="refresh-resources-btn" class="card-control-button">
+                                <span class="control-icon">↻</span> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="resource-panel" id="resource-panel">
+                            <!-- Will be filled dynamically by resource visualization component -->
+                            <div class="resource-visualization-controls flex items-center space-between mb-10">
+                                <div class="resource-visualization-title text-highlight">Resource Dashboard</div>
+                                <button id="refresh-resources" class="card-control-button">
+                                    <span class="control-icon">↻</span> Refresh Metrics
+                                </button>
+                            </div>
+                            
+                            <!-- Placeholder resource cards with integrated game/meta display -->
+                            <div class="resource-visualization-grid">
+                                <div class="resource-integrated-card">
+                                    <div class="resource-badge game">Game</div>
+                                    <div class="resource-badge meta">Meta</div>
+                                    <div class="resource-header">
+                                        <div class="resource-icon-container" style="background: #3a86ff20">
+                                            <span class="resource-icon">🖥️</span>
+                                        </div>
+                                        <div class="resource-name">Computing Power</div>
+                                    </div>
+                                    <div class="resource-metrics-row">
+                                        <div class="resource-metric">
+                                            <div class="resource-metric-value game">1,245</div>
+                                            <div class="resource-metric-label">Game Value</div>
+                                            <div class="resource-rate">(+12.5/s)</div>
+                                        </div>
+                                        <div class="resource-flow-icon">⟷</div>
+                                        <div class="resource-metric">
+                                            <div class="resource-metric-value meta">3.2k</div>
+                                            <div class="resource-metric-label">Meta Value</div>
+                                            <div class="resource-rate">+482/day</div>
+                                        </div>
+                                    </div>
+                                    <div class="resource-bars">
+                                        <div class="resource-bar-container">
+                                            <div class="resource-bar-label">Game Progress</div>
+                                            <div class="resource-bar">
+                                                <div class="resource-bar-fill game-fill" style="width: 65%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="resource-bar-container">
+                                            <div class="resource-bar-label">Meta Progress</div>
+                                            <div class="resource-bar">
+                                                <div class="resource-bar-fill meta-fill" style="width: 45%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="resource-description-container">
+                                        <div class="resource-description">
+                                            <div class="description-title">Game:</div>
+                                            <div class="description-text">Raw computational capacity for AI tasks</div>
+                                        </div>
+                                        <div class="resource-description">
+                                            <div class="description-title">Meta:</div>
+                                            <div class="description-text">Real-world computational resources used in development</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Additional placeholder card -->
+                                <div class="resource-integrated-card">
+                                    <div class="resource-badge game">Game</div>
+                                    <div class="resource-badge meta">Meta</div>
+                                    <div class="resource-header">
+                                        <div class="resource-icon-container" style="background: #ffcc0020">
+                                            <span class="resource-icon">🌐</span>
+                                        </div>
+                                        <div class="resource-name">Influence</div>
+                                    </div>
+                                    <div class="resource-metrics-row">
+                                        <div class="resource-metric">
+                                            <div class="resource-metric-value game">342</div>
+                                            <div class="resource-metric-label">Game Value</div>
+                                            <div class="resource-rate">(+5.2/s)</div>
+                                        </div>
+                                        <div class="resource-flow-icon">⟷</div>
+                                        <div class="resource-metric">
+                                            <div class="resource-metric-value meta">Growing</div>
+                                            <div class="resource-metric-label">Meta Value</div>
+                                            <div class="resource-rate">+1 level/month</div>
+                                        </div>
+                                    </div>
+                                    <div class="resource-bars">
+                                        <div class="resource-bar-container">
+                                            <div class="resource-bar-label">Game Progress</div>
+                                            <div class="resource-bar">
+                                                <div class="resource-bar-fill game-fill" style="width: 40%; background: linear-gradient(90deg, #ffcc00, #ffcc0060);"></div>
+                                            </div>
+                                        </div>
+                                        <div class="resource-bar-container">
+                                            <div class="resource-bar-label">Meta Progress</div>
+                                            <div class="resource-bar">
+                                                <div class="resource-bar-fill meta-fill" style="width: 60%; background: linear-gradient(90deg, #ffcc0080, #ffcc0020);"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="resource-description-container">
+                                        <div class="resource-description">
+                                            <div class="description-title">Game:</div>
+                                            <div class="description-text">Network effects and external impact</div>
+                                        </div>
+                                        <div class="resource-description">
+                                            <div class="description-title">Meta:</div>
+                                            <div class="description-text">Real-world impact and audience reach</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Data resource card -->
+                                <div class="resource-integrated-card">
+                                    <div class="resource-badge game">Game</div>
+                                    <div class="resource-badge meta">Meta</div>
+                                    <div class="resource-header">
+                                        <div class="resource-icon-container" style="background: #8fb8ff20">
+                                            <span class="resource-icon">📊</span>
+                                        </div>
+                                        <div class="resource-name">Data</div>
+                                    </div>
+                                    <div class="resource-metrics-row">
+                                        <div class="resource-metric">
+                                            <div class="resource-metric-value game">845</div>
+                                            <div class="resource-metric-label">Game Value</div>
+                                            <div class="resource-rate">(+8.7/s)</div>
+                                        </div>
+                                        <div class="resource-flow-icon">⟷</div>
+                                        <div class="resource-metric">
+                                            <div class="resource-metric-value meta">1.5k</div>
+                                            <div class="resource-metric-label">Meta Value</div>
+                                            <div class="resource-rate">+250/day</div>
+                                        </div>
+                                    </div>
+                                    <div class="resource-bars">
+                                        <div class="resource-bar-container">
+                                            <div class="resource-bar-label">Game Progress</div>
+                                            <div class="resource-bar">
+                                                <div class="resource-bar-fill game-fill" style="width: 55%; background: linear-gradient(90deg, #8fb8ff, #8fb8ff60);"></div>
+                                            </div>
+                                        </div>
+                                        <div class="resource-bar-container">
+                                            <div class="resource-bar-label">Meta Progress</div>
+                                            <div class="resource-bar">
+                                                <div class="resource-bar-fill meta-fill" style="width: 38%; background: linear-gradient(90deg, #8fb8ff80, #8fb8ff20);"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="resource-description-container">
+                                        <div class="resource-description">
+                                            <div class="description-title">Game:</div>
+                                            <div class="description-text">Information processed by AI systems</div>
+                                        </div>
+                                        <div class="resource-description">
+                                            <div class="description-title">Meta:</div>
+                                            <div class="description-text">Actual data generated during development</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid-container mt-15">
+                    <div class="grid-item col-7 col-md-12">
+                        <div class="card-header">
+                            <h2 class="card-title">Resource Actions</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="resource-allocations" id="resource-allocations">
+                                <p class="mb-10">Manually generate resources to progress in the game:</p>
+                                <div class="action-buttons grid-cols-2 gap-10">
+                                    <button id="generate-computing" class="resource-action-btn">
+                                        <span class="resource-action-icon">🖥️</span>
+                                        <span>Generate Computing Power</span>
+                                    </button>
+                                    <button id="collect-data" class="resource-action-btn">
+                                        <span class="resource-action-icon">📊</span>
+                                        <span>Collect Data</span>
+                                    </button>
+                                    <button id="seek-funding" class="resource-action-btn">
+                                        <span class="resource-action-icon">💰</span>
+                                        <span>Seek Funding</span>
+                                    </button>
+                                    <button id="build-influence" class="resource-action-btn">
+                                        <span class="resource-action-icon">🌐</span>
+                                        <span>Build Influence</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- MCP Connection (hidden for now) -->
-                    <div class="mcp-connection" style="display: none;">
-                        <h3>MCP Connection</h3>
-                        <p>Connect to real MCP servers to trigger singularity events and unlock new capabilities.</p>
-                        <button id="connectMCP">Connect MCP Server</button>
+                    <div class="grid-item col-5 col-md-12">
+                        <div class="card-header">
+                            <h2 class="card-title">Development Progress</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="progress-container">
+                                <div class="progress-header">
+                                    <div class="progress-title">Progress to Next Phase</div>
+                                    <div class="progress-value" id="phase-progress-value">30%</div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" id="phase-progress-bar" style="width: 30%"></div>
+                                </div>
+                                <div class="mt-15 text-center">
+                                    <button id="trigger-singularity-btn" class="singularity-btn" disabled>Trigger Singularity</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Upgrades Tab -->
-                <div class="tab-pane" id="upgrades-tab">
-                    <div class="card">
-                        <h2>Available Upgrades</h2>
-                        <div class="upgrades" id="upgradesContainer">
-                            <div class="upgrade" data-upgrade="hardware1">
-                                <h3>Basic Hardware</h3>
-                                <p>Improve your computing infrastructure.</p>
-                                <p class="cost">Cost: 50 Computing Power</p>
-                                <p class="benefit">+2 Computing Power/sec</p>
+            </section>
+
+            <!-- SERVERS SECTION -->
+            <section class="dashboard-section" id="servers-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Server Management</h2>
+                        <div class="card-controls">
+                            <button id="refresh-servers" class="card-control-button">
+                                <span class="control-icon">↻</span> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="server-status-panel" id="server-status-panel">
+                            <!-- Will be populated by server status component -->
+                            <div class="server-controls-header flex items-center space-between mb-10">
+                                <div class="server-controls-title text-highlight">Server Management</div>
+                                <div class="server-controls-actions">
+                                    <button id="refresh-servers-btn" class="server-button" title="Refresh server status">
+                                        <span class="server-button-icon">↻</span> Refresh
+                                    </button>
+                                    <select id="server-auto-refresh" class="server-select">
+                                        <option value="0">Manual refresh</option>
+                                        <option value="5000" selected>Refresh every 5s</option>
+                                        <option value="10000">Refresh every 10s</option>
+                                        <option value="30000">Refresh every 30s</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="upgrade" data-upgrade="algorithm1">
-                                <h3>Machine Learning Basics</h3>
-                                <p>Implement fundamental ML algorithms.</p>
-                                <p class="cost">Cost: 30 Data</p>
-                                <p class="benefit">+50% Data efficiency</p>
-                            </div>
-                            <div class="upgrade" data-upgrade="funding1">
-                                <h3>Angel Investment</h3>
-                                <p>Secure initial funding for your project.</p>
-                                <p class="cost">Cost: 20 Influence</p>
-                                <p class="benefit">+5 Funding/sec</p>
-                            </div>
-                            <div class="upgrade disabled" data-upgrade="architecture1">
-                                <h3>Neural Architecture</h3>
-                                <p>Develop advanced neural network structures.</p>
-                                <p class="cost">Cost: 100 Computing Power, 80 Data</p>
-                                <p class="benefit">Unlocks General AI phase</p>
+                            
+                            <!-- Placeholder server cards -->
+                            <div class="server-status-grid">
+                                <div class="server-card" data-server-id="mcp">
+                                    <div class="server-header">
+                                        <div class="server-name">
+                                            <span class="server-icon">🌐</span>
+                                            MCP Server
+                                        </div>
+                                        <div class="server-status status-running">
+                                            Running
+                                        </div>
+                                    </div>
+                                    <div class="server-details">
+                                        <div class="server-info">
+                                            <div class="server-info-item">
+                                                <span class="server-info-label">Port:</span>
+                                                <span class="server-info-value">3000</span>
+                                            </div>
+                                            <div class="server-info-item">
+                                                <span class="server-info-label">PID:</span>
+                                                <span class="server-info-value">12345</span>
+                                            </div>
+                                            <div class="server-info-item">
+                                                <span class="server-info-label">Uptime:</span>
+                                                <span class="server-info-value">01:23:45</span>
+                                            </div>
+                                        </div>
+                                        <div class="server-metrics">
+                                            <div class="server-metric">
+                                                <div class="metric-name">Requests/min</div>
+                                                <div class="metric-value">42</div>
+                                            </div>
+                                            <div class="server-metric">
+                                                <div class="metric-name">Memory</div>
+                                                <div class="metric-value">24MB</div>
+                                            </div>
+                                            <div class="server-metric">
+                                                <div class="metric-name">CPU</div>
+                                                <div class="metric-value">2%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="server-controls">
+                                        <button class="server-button start-server" data-server-id="mcp" disabled>
+                                            <span class="server-button-icon">▶</span> Start
+                                        </button>
+                                        <button class="server-button stop-server" data-server-id="mcp">
+                                            <span class="server-button-icon">■</span> Stop
+                                        </button>
+                                        <button class="server-button restart-server" data-server-id="mcp">
+                                            <span class="server-button-icon">↻</span> Restart
+                                        </button>
+                                        <button class="server-button view-logs-server" data-server-id="mcp">
+                                            <span class="server-button-icon">📋</span> Logs
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="server-card" data-server-id="metrics">
+                                    <div class="server-header">
+                                        <div class="server-name">
+                                            <span class="server-icon">📊</span>
+                                            Metrics Server
+                                        </div>
+                                        <div class="server-status status-stopped">
+                                            Stopped
+                                        </div>
+                                    </div>
+                                    <div class="server-details">
+                                        <div class="server-info">
+                                            <div class="server-info-item">
+                                                <span class="server-info-label">Port:</span>
+                                                <span class="server-info-value">3001</span>
+                                            </div>
+                                            <div class="server-info-item">
+                                                <span class="server-info-label">PID:</span>
+                                                <span class="server-info-value">N/A</span>
+                                            </div>
+                                            <div class="server-info-item">
+                                                <span class="server-info-label">Uptime:</span>
+                                                <span class="server-info-value">N/A</span>
+                                            </div>
+                                        </div>
+                                        <div class="server-metrics">
+                                            <div class="server-no-metrics">No metrics available</div>
+                                        </div>
+                                    </div>
+                                    <div class="server-controls">
+                                        <button class="server-button start-server" data-server-id="metrics">
+                                            <span class="server-button-icon">▶</span> Start
+                                        </button>
+                                        <button class="server-button stop-server" data-server-id="metrics" disabled>
+                                            <span class="server-button-icon">■</span> Stop
+                                        </button>
+                                        <button class="server-button restart-server" data-server-id="metrics" disabled>
+                                            <span class="server-button-icon">↻</span> Restart
+                                        </button>
+                                        <button class="server-button view-logs-server" data-server-id="metrics">
+                                            <span class="server-button-icon">📋</span> Logs
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                
-                <!-- Profile Tab -->
-                <div class="tab-pane" id="profile-tab">
-                    <div class="card">
-                        <h3>User Profile</h3>
-                        <p>Share information about yourself to personalize your AI development journey.</p>
-                        <div style="margin-top: 10px;">
-                            <label for="user-name">Your Name:</label>
-                            <input type="text" id="user-name">
+                <div class="card mt-10">
+                    <div class="card-header">
+                        <h2 class="card-title">Server Logs</h2>
+                        <div class="card-controls">
+                            <div class="flex items-center gap-10">
+                                <select id="server-logs-filter" class="server-select">
+                                    <option value="all">All Servers</option>
+                                    <option value="mcp">MCP Server</option>
+                                    <option value="metrics">Metrics Server</option>
+                                    <option value="claude">Claude Server</option>
+                                </select>
+                                <select id="server-logs-level" class="server-select">
+                                    <option value="all">All Levels</option>
+                                    <option value="info">Info</option>
+                                    <option value="warning">Warning</option>
+                                    <option value="error">Error</option>
+                                </select>
+                                <button id="clear-server-log" class="card-control-button">
+                                    <span class="control-icon">×</span> Clear
+                                </button>
+                            </div>
                         </div>
-                        <div style="margin-top: 10px;">
-                            <label for="user-background">Your Background:</label>
-                            <select id="user-background">
-                                <option value="">Select your background</option>
-                                <option value="developer">Software Developer</option>
-                                <option value="researcher">AI Researcher</option>
-                                <option value="student">Student</option>
-                                <option value="enthusiast">Tech Enthusiast</option>
-                                <option value="other">Other</option>
+                    </div>
+                    <div class="card-content">
+                        <div class="log-viewer">
+                            <div class="log-content" id="server-log-content">
+                                <!-- Placeholder log entries -->
+                                <div class="log-entry" data-server="mcp" data-level="info">
+                                    <span class="log-timestamp">12:34:56</span>
+                                    <span class="log-server">[mcp]</span>
+                                    <span class="log-level-info">Server started on port 3000</span>
+                                </div>
+                                <div class="log-entry" data-server="mcp" data-level="info">
+                                    <span class="log-timestamp">12:35:01</span>
+                                    <span class="log-server">[mcp]</span>
+                                    <span class="log-level-info">Initialized MCP capabilities</span>
+                                </div>
+                                <div class="log-entry" data-server="mcp" data-level="warning">
+                                    <span class="log-timestamp">12:35:15</span>
+                                    <span class="log-server">[mcp]</span>
+                                    <span class="log-level-warning">Client connection attempt with invalid token</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CAPABILITIES SECTION -->
+            <section class="dashboard-section" id="capabilities-section">
+                <div class="grid-container">
+                    <div class="grid-item col-12">
+                        <div class="card-header">
+                            <h2 class="card-title">Character Roles</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="character-panel" id="character-panel">
+                                <!-- Placeholder character cards -->
+                                <div class="character-card active" data-character="visionary">
+                                    <div class="character-header">
+                                        <div class="character-icon">👁️</div>
+                                        <div class="character-name">The Visionary</div>
+                                    </div>
+                                    <div class="character-role">User - A brilliant but eccentric technologist with unconventional ideas</div>
+                                    <div class="character-description">Specializes in generating breakthrough ideas and innovative concepts.</div>
+                                    <div class="character-bonus">+50% to algorithm breakthroughs • "Eureka Moments" randomly unlock technologies</div>
+                                </div>
+                                <div class="character-card active" data-character="engineer">
+                                    <div class="character-header">
+                                        <div class="character-icon">⚙️</div>
+                                        <div class="character-name">The Engineer</div>
+                                    </div>
+                                    <div class="character-role">Claude - A methodical, hands-on developer focused on practical solutions</div>
+                                    <div class="character-description">Excels at implementation, optimization, and solving technical challenges.</div>
+                                    <div class="character-bonus">+30% computing power efficiency • "Optimization" improves existing systems</div>
+                                </div>
+                                <div class="character-card" data-character="dataScientist">
+                                    <div class="character-header">
+                                        <div class="character-icon">📊</div>
+                                        <div class="character-name">The Data Scientist</div>
+                                    </div>
+                                    <div class="character-role">Locked - A pattern-recognition specialist who excels at extracting insights</div>
+                                    <div class="character-description">Specializes in finding patterns in data and generating valuable insights.</div>
+                                    <div class="character-bonus">+40% data collection rate • "Pattern Recognition" reveals hidden connections</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid-item col-12">
+                        <div class="card-header">
+                            <h2 class="card-title">Active Capabilities</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="capability-panel" id="capability-panel">
+                                <!-- Placeholder capability cards -->
+                                <div class="capability-card">
+                                    <div class="capability-header">
+                                        <div class="capability-name">File System Access</div>
+                                        <div class="capability-status active">Active</div>
+                                    </div>
+                                    <div class="capability-description">Access and modify files on the local system through structured APIs.</div>
+                                    <div class="capability-bar">
+                                        <div class="capability-bar-fill efficiency-high" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                <div class="capability-card">
+                                    <div class="capability-header">
+                                        <div class="capability-name">Server Management</div>
+                                        <div class="capability-status limited">Limited</div>
+                                    </div>
+                                    <div class="capability-description">Start, stop, and monitor backend server processes.</div>
+                                    <div class="capability-bar">
+                                        <div class="capability-bar-fill efficiency-medium" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                                <div class="capability-card">
+                                    <div class="capability-header">
+                                        <div class="capability-name">Web Search</div>
+                                        <div class="capability-status emerging">Emerging</div>
+                                    </div>
+                                    <div class="capability-description">Search and retrieve information from the web.</div>
+                                    <div class="capability-bar">
+                                        <div class="capability-bar-fill efficiency-low" style="width: 30%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- UPGRADES SECTION -->
+            <section class="dashboard-section" id="upgrades-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Capability Upgrades</h2>
+                        <div class="card-controls">
+                            <select id="upgrade-filter" class="card-select">
+                                <option value="all">All Upgrades</option>
+                                <option value="available">Available</option>
+                                <option value="research">Research</option>
+                                <option value="purchased">Purchased</option>
                             </select>
                         </div>
-                        <div style="margin-top: 10px;">
-                            <label for="user-interests">AI Interests:</label>
-                            <textarea id="user-interests" placeholder="What aspects of AI are you most interested in?"></textarea>
+                    </div>
+                    <div class="card-content">
+                        <div class="upgrades-grid" id="upgrades-grid">
+                            <!-- Placeholder upgrade items -->
+                            <div class="upgrade-card" data-status="available">
+                                <div class="upgrade-header">
+                                    <div class="upgrade-name">Neural Network Optimization</div>
+                                    <div class="upgrade-cost">250 Computing Power, 100 Data</div>
+                                </div>
+                                <div class="upgrade-description">
+                                    Improve neural network training efficiency through advanced optimization techniques.
+                                </div>
+                                <div class="upgrade-benefits">
+                                    <div class="upgrade-benefit-item">
+                                        <span class="upgrade-benefit-icon">📈</span>
+                                        <span class="upgrade-benefit-text">+25% Computing Power efficiency</span>
+                                    </div>
+                                    <div class="upgrade-benefit-item">
+                                        <span class="upgrade-benefit-icon">⚡</span>
+                                        <span class="upgrade-benefit-text">15% faster training times</span>
+                                    </div>
+                                </div>
+                                <button class="upgrade-button">Purchase</button>
+                            </div>
+                            
+                            <div class="upgrade-card" data-status="research">
+                                <div class="upgrade-header">
+                                    <div class="upgrade-name">Distributed Computing</div>
+                                    <div class="upgrade-progress">45% Researched</div>
+                                </div>
+                                <div class="upgrade-description">
+                                    Implement distributed computing architecture for parallel processing.
+                                </div>
+                                <div class="upgrade-requirement">
+                                    <div class="upgrade-requirement-label">Research requires:</div>
+                                    <div class="upgrade-requirement-item">500 Computing Power</div>
+                                </div>
+                                <div class="upgrade-research-progress">
+                                    <div class="upgrade-research-bar">
+                                        <div class="upgrade-research-fill" style="width: 45%"></div>
+                                    </div>
+                                </div>
+                                <button class="upgrade-button research">Continue Research</button>
+                            </div>
+                            
+                            <div class="upgrade-card purchased" data-status="purchased">
+                                <div class="upgrade-header">
+                                    <div class="upgrade-name">Basic Machine Learning</div>
+                                    <div class="upgrade-complete">Purchased</div>
+                                </div>
+                                <div class="upgrade-description">
+                                    Implement fundamental machine learning algorithms.
+                                </div>
+                                <div class="upgrade-benefits">
+                                    <div class="upgrade-benefit-item">
+                                        <span class="upgrade-benefit-icon">🧠</span>
+                                        <span class="upgrade-benefit-text">Unlocked pattern recognition</span>
+                                    </div>
+                                    <div class="upgrade-benefit-item">
+                                        <span class="upgrade-benefit-icon">📊</span>
+                                        <span class="upgrade-benefit-text">+50% Data processing</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <button id="save-profile">Save Profile</button>
                     </div>
                 </div>
+            </section>
+
+            <!-- TERMINAL SECTION -->
+            <section class="dashboard-section" id="terminal-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Interactive Terminal</h2>
+                        <div class="card-controls">
+                            <button id="clear-terminal" class="card-control-button">
+                                <span class="control-icon">×</span> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="terminal-container">
+                            <div class="terminal-content" id="terminal-content">
+                                <div class="terminal-line welcome">Welcome to Logoboros Interactive Terminal v1.0</div>
+                                <div class="terminal-line welcome">Type 'help' for available commands</div>
+                                <div class="terminal-line">
+                                    <span class="terminal-prompt">&gt;</span> status
+                                </div>
+                                <div class="terminal-line">
+                                    Game Status:
+                                    - Phase: Early General AI
+                                    - Character: The Engineer
+                                    - Computing Power: 1,245
+                                    - Data: 845
+                                    - Influence: 342
+                                    - Funding: 215
+                                    - Progress: 30.0%
+                                </div>
+                            </div>
+                            <div class="terminal-input-container">
+                                <span class="terminal-prompt">&gt;</span>
+                                <input type="text" class="terminal-input" id="terminal-input" placeholder="Enter command...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NEWS SECTION -->
+            <section class="dashboard-section" id="news-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Development News</h2>
+                        <div class="card-controls">
+                            <button id="clear-news" class="card-control-button">
+                                <span class="control-icon">×</span> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="news-feed" id="news-feed">
+                            <!-- Placeholder news items -->
+                            <div class="news-item">
+                                <div class="news-timestamp">13:45:22</div>
+                                <div class="news-content">UI Reset implementation has started. New unified dashboard provides meta-game integration.</div>
+                            </div>
+                            <div class="news-item">
+                                <div class="news-timestamp">13:30:15</div>
+                                <div class="news-content">Server management capabilities improved with auto-refresh and detailed metrics.</div>
+                            </div>
+                            <div class="news-item">
+                                <div class="news-timestamp">12:15:03</div>
+                                <div class="news-content">Resource visualization now shows connection between game resources and real metrics.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LOGS SECTION -->
+            <section class="dashboard-section" id="logs-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">System Logs</h2>
+                        <div class="card-controls">
+                            <div class="flex items-center gap-10">
+                                <select id="log-level-filter" class="card-select">
+                                    <option value="all">All Levels</option>
+                                    <option value="info">Info</option>
+                                    <option value="warning">Warning</option>
+                                    <option value="error">Error</option>
+                                </select>
+                                <button id="clear-logs" class="card-control-button">
+                                    <span class="control-icon">×</span> Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="log-viewer">
+                            <div class="log-content" id="log-content">
+                                <!-- Placeholder log entries -->
+                                <div class="log-entry" data-level="info">
+                                    <span class="log-timestamp">12:34:56</span>
+                                    <span class="log-level-info">Unified dashboard initialized</span>
+                                </div>
+                                <div class="log-entry" data-level="info">
+                                    <span class="log-timestamp">12:35:01</span>
+                                    <span class="log-level-info">Resource visualization component loaded</span>
+                                </div>
+                                <div class="log-entry" data-level="warning">
+                                    <span class="log-timestamp">12:35:15</span>
+                                    <span class="log-level-warning">Could not connect to metrics server</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="dashboard-footer">
+            <div class="footer-status">
+                <span id="connection-status">Servers: Connected</span>
             </div>
-        </div>
-    </div>
-
-    <!-- Footer with GitHub Link -->
-    <div class="footer">
-        <p>
-            <a href="https://github.com/ddisisto/logoboros" target="_blank">
-                View on GitHub
-            </a>
-            |
-            <a href="https://ddisisto.github.io/logoboros/">
-                Play Online
-            </a>
-        </p>
-    </div>
-
-    <!-- Log Display -->
-    <div id="log-display">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-            <h3 style="margin: 0; color: #3a86ff;">Game Logs</h3>
-            <div>
-                <button id="clear-logs" style="background: none; border: none; color: #fff; cursor: pointer; margin-right: 10px;">Clear</button>
-                <button id="toggle-logs" style="background: none; border: none; color: #fff; cursor: pointer;">Hide</button>
+            <div class="footer-links">
+                <a href="https://github.com/ddisisto/logoboros" target="_blank">GitHub</a>
+                <a href="#" id="toggle-log-display">Show Logs</a>
             </div>
-        </div>
-        <div id="log-content"></div>
+        </footer>
     </div>
 
-    <!-- MCP Scripts -->
-    <script src="mcp-server.js"></script>
-    <script src="bridge.js"></script>
-    
-    <!-- Game Scripts (in correct loading order) -->
+    <!-- Notification Component -->
+    <div class="notification" id="notification" style="display: none">Notification message</div>
+
+    <!-- SCRIPTS -->
+    <!-- Core scripts -->
     <script src="js/core/events.js"></script>
     <script src="js/core/state.js"></script>
     <script src="js/core/logger.js"></script>
@@ -253,33 +886,432 @@
     <script src="js/core/metrics-fetcher.js"></script>
     <script src="js/core/claude-metrics-bridge.js"></script>
     <script src="js/core/server-bridge.js"></script>
+    
+    <!-- MCP scripts -->
+    <script src="mcp-server.js"></script>
+    <script src="bridge.js"></script>
+    <script src="js/mcp/interface.js"></script>
+    <script src="js/mcp/claude-client.js"></script>
+    
+    <!-- UI scripts -->
     <script src="js/ui/renderer.js"></script>
     <script src="js/ui/interactions.js"></script>
     <script src="js/ui/meta-dashboard.js"></script>
-    <script src="js/mcp/interface.js"></script>
-    <script src="js/mcp/claude-client.js"></script>
+    <script src="js/ui/server-status.js"></script>
+    <script src="js/ui/resource-visualization.js"></script>
+    <script src="js/ui/unified-dashboard.js"></script>
+    
+    <!-- Main entry point -->
     <script src="js/main.js"></script>
     
-    <!-- Meta-Dashboard Toggle -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Create meta-dashboard toggle button
-            const actionsCard = document.querySelector('.card');
-            if (actionsCard) {
-                const metaButton = document.createElement('button');
-                metaButton.id = 'toggle-meta-dashboard';
-                metaButton.textContent = 'Toggle Meta-Dashboard';
-                metaButton.className = 'meta-btn';
-                actionsCard.appendChild(metaButton);
-                
-                // Add event listener
-                metaButton.addEventListener('click', function() {
-                    if (window.metaDashboard) {
-                        window.metaDashboard.toggle();
-                    }
-                });
+    <!-- Dynamic style for resource action buttons -->
+    <style id="resource-action-styles">
+        .resource-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 10px 15px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            font-size: 14px;
+        }
+        
+        .resource-action-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-highlight);
+        }
+        
+        .resource-action-icon {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        @media (max-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
             }
-        });
-    </script>
+        }
+        
+        .singularity-btn {
+            background: linear-gradient(45deg, #3a86ff, #8fb8ff);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            box-shadow: 0 2px 10px rgba(58, 134, 255, 0.4);
+        }
+        
+        .singularity-btn:hover:not(:disabled) {
+            background: linear-gradient(45deg, #2a76ef, #7fa8ef);
+            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.6);
+            transform: translateY(-2px);
+        }
+        
+        .singularity-btn:disabled {
+            background: linear-gradient(45deg, #3a3a3a, #5a5a5a);
+            color: #aaa;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        /* Terminal styles */
+        .terminal-line.welcome {
+            color: var(--accent-primary);
+            margin-bottom: 5px;
+        }
+        
+        /* Upgrade card styles */
+        .upgrades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .upgrade-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--card-border-radius);
+            padding: 15px;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .upgrade-card:hover {
+            border-color: var(--border-highlight);
+            box-shadow: 0 0 8px rgba(58, 134, 255, 0.2);
+        }
+        
+        .upgrade-card.purchased {
+            opacity: 0.7;
+        }
+        
+        .upgrade-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .upgrade-name {
+            font-weight: bold;
+            color: var(--text-highlight);
+        }
+        
+        .upgrade-cost {
+            font-size: 12px;
+            color: var(--text-negative);
+        }
+        
+        .upgrade-progress, 
+        .upgrade-complete {
+            font-size: 12px;
+            color: var(--text-warning);
+        }
+        
+        .upgrade-complete {
+            color: var(--text-positive);
+        }
+        
+        .upgrade-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        
+        .upgrade-benefits {
+            margin-bottom: 15px;
+        }
+        
+        .upgrade-benefit-item,
+        .upgrade-requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        
+        .upgrade-benefit-icon {
+            opacity: 0.8;
+        }
+        
+        .upgrade-benefit-text {
+            color: var(--text-positive);
+        }
+        
+        .upgrade-requirement {
+            margin-bottom: 10px;
+        }
+        
+        .upgrade-requirement-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        
+        .upgrade-requirement-item {
+            color: var(--text-warning);
+        }
+        
+        .upgrade-research-progress {
+            margin-bottom: 15px;
+        }
+        
+        .upgrade-research-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .upgrade-research-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 2px;
+        }
+        
+        .upgrade-button {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-highlight);
+            padding: 8px 12px;
+            width: 100%;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .upgrade-button:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-highlight);
+        }
+        
+        .upgrade-button.research {
+            color: var(--text-warning);
+        }
+        
+        /* Header phase indicator */
+        .phase-indicator-mini {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(58, 134, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(58, 134, 255, 0.2);
+        }
+        
+        .phase-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .phase-value {
+            font-weight: bold;
+            color: var(--text-highlight);
+        }
+        
+        /* Meta stats */
+        .meta-stats {
+            padding: 5px 0;
+        }
+        
+        .meta-stat-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 3px 0;
+        }
+        
+        .meta-stat-label {
+            color: var(--text-secondary);
+        }
+        
+        .meta-stat-value {
+            color: var(--text-highlight);
+            font-weight: bold;
+        }
+        
+        /* Card control button */
+        .card-control-button {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .card-control-button:hover {
+            background: var(--bg-hover);
+            color: var(--text-highlight);
+            border-color: var(--border-highlight);
+        }
+        
+        .control-icon {
+            opacity: 0.7;
+        }
+        
+        .card-select {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .card-select:focus {
+            border-color: var(--border-highlight);
+            outline: none;
+        }
+        
+        /* Integrated resource cards with game/meta side by side */
+        .resource-integrated-card {
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .resource-integrated-card:hover {
+            border-color: var(--border-highlight);
+            box-shadow: 0 0 12px rgba(58, 134, 255, 0.2);
+        }
+        
+        .resource-badge {
+            position: absolute;
+            top: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 5;
+        }
+        
+        .resource-badge.game {
+            left: 10px;
+            background: rgba(58, 134, 255, 0.2);
+            color: #aad4ff;
+        }
+        
+        .resource-badge.meta {
+            right: 10px;
+            background: rgba(255, 204, 0, 0.2);
+            color: #ffcc00;
+        }
+        
+        .resource-metrics-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .resource-metric {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .resource-metric-value {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        
+        .resource-metric-value.game {
+            color: #aad4ff;
+        }
+        
+        .resource-metric-value.meta {
+            color: #ffcc00;
+        }
+        
+        .resource-metric-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+        }
+        
+        .resource-flow-icon {
+            font-size: 20px;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .resource-bars {
+            margin-bottom: 15px;
+        }
+        
+        .resource-bar-container {
+            margin-bottom: 8px;
+        }
+        
+        .resource-bar-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .game-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3a86ff, #3a86ff60);
+            border-radius: 2px;
+        }
+        
+        .meta-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffcc0080, #ffcc0020);
+            border-radius: 2px;
+        }
+        
+        .resource-description-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 11px;
+        }
+        
+        .resource-description {
+            color: var(--text-secondary);
+        }
+        
+        .description-title {
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        
+        .description-title:first-child {
+            color: #aad4ff;
+        }
+        
+        .description-title:last-of-type {
+            color: #ffcc00;
+        }
+    </style>
 </body>
 </html>
