@@ -3,6 +3,7 @@
 ## Active Tasks
 - Track user input in this file and cycle completed items appropriately
 - Keep USER_INPUT.md as central tracking for requirements and tasks
+- Simplify the todo-commit system with COMMIT_GUIDELINES.md
 - Update meta-dashboard to expand character role capabilities
 - Integrate user input tracking with meta-state system
 - Improve feedback loops between development and gameplay
