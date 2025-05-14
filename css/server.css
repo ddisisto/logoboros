@@ -1,0 +1,306 @@
+/* Server-specific styles for AI Singularity Game */
+
+/* Server Connection Card */
+.server-connection {
+  margin-top: 20px;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--accent-red);
+}
+
+.status-indicator.connected {
+  background-color: var(--accent-green);
+}
+
+.server-actions {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.server-capabilities {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+}
+
+.capabilities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.capability-tag {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: 15px;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.capability-tag.active {
+  background-color: rgba(58, 134, 255, 0.2);
+  border-color: var(--accent-blue);
+}
+
+.capability-icon {
+  margin-right: 5px;
+}
+
+/* Server Management */
+.server-controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.server-controls-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.server-button {
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.server-button:hover:not(:disabled) {
+  background-color: var(--hover-overlay);
+  border-color: var(--accent-blue);
+}
+
+.server-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.server-button-icon {
+  font-weight: bold;
+}
+
+.server-select {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+/* Server Cards */
+.server-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 15px;
+}
+
+.server-status-empty {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-muted);
+}
+
+.server-card {
+  background-color: var(--bg-light);
+  border-radius: var(--card-border-radius);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.server-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.server-name {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.server-icon {
+  font-size: 1.2rem;
+}
+
+.server-status {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.status-running {
+  background-color: rgba(63, 185, 80, 0.2);
+  color: var(--accent-green);
+}
+
+.status-starting {
+  background-color: rgba(255, 159, 28, 0.2);
+  color: var(--accent-orange);
+}
+
+.status-stopped {
+  background-color: rgba(248, 81, 73, 0.2);
+  color: var(--accent-red);
+}
+
+.server-details {
+  padding: 10px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.server-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.server-info-item {
+  font-size: 0.85rem;
+}
+
+.server-info-label {
+  color: var(--text-muted);
+}
+
+.server-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.server-metric {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 0.85rem;
+}
+
+.metric-name {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-bottom: 3px;
+}
+
+.server-no-metrics {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 10px;
+}
+
+.server-controls {
+  display: flex;
+  gap: 5px;
+  padding: 10px 15px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Server Logs */
+.server-logs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.server-logs-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.server-logs-autoscroll {
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.server-log-content {
+  height: 300px;
+  overflow-y: auto;
+  background-color: var(--bg-dark);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.log-entry {
+  margin-bottom: 5px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.log-timestamp {
+  color: var(--text-muted);
+  margin-right: 8px;
+}
+
+.log-server {
+  color: var(--accent-blue);
+  margin-right: 8px;
+}
+
+.log-level-info {
+  color: var(--text-primary);
+}
+
+.log-level-warning {
+  color: var(--accent-orange);
+}
+
+.log-level-error {
+  color: var(--accent-red);
+}
+
+.log-level-success {
+  color: var(--accent-green);
+}
+
+.log-empty {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-muted);
+  font-style: italic;
+}

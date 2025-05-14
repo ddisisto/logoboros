@@ -2,8 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**IMPORTANT**: Always check the [USER_INPUT.md](USER_INPUT.md) file for critical user instructions, budget tracking, and character role information. This file contains essential context that must be incorporated into your planning and implementation.
-
 ## Project Overview
 
 AI Singularity is a web-based incremental game where players guide the evolution of AI systems through various stages of development, unlocking new capabilities, resources, and ultimately reaching singularity events that reset progress but provide powerful permanent bonuses.
@@ -22,11 +20,95 @@ This creates a fascinating recursive loop where:
 - Real capabilities (Claude Code) enhance the meta-narrative
 - The meta-state system tracks real-world progress as game resources
 - Each developer interaction represents a "singularity event" that advances capabilities
-- The TODO system directly connects to commit patterns, creating feedback loops
-- User adopts character roles (The Visionary, The Engineer, etc.) for meta-game progression
-- Budget tracking and project phase management are incorporated into the meta-game
 
 The Claude agent should regularly review and update this file to optimize its understanding of both the environment and itself simultaneously, creating a short recursive loop that drives improvement in both the concrete game and the meta-game.
+
+## Git Workflow and Branch Management
+
+### Branch Structure
+
+The project uses a multi-branch structure to organize different aspects of development:
+
+- `main`: The primary branch containing stable releases
+- `claude`: Integration with Claude Code capabilities and metrics
+- `ui-ux-improvements`: UI/UX enhancements and redesigns
+- `ui-reset-implementation`: Implementation of the new UI framework
+- `enhanced-meta-dashboard`: Meta-game dashboard improvements
+- `refactor-architecture`: Code architecture refactoring
+- `self-improving-system`: Meta-game recursive system development
+
+### Branch Selection Guidelines
+
+When working on a task, follow these guidelines for branch selection:
+
+1. **Always start** by identifying the current branch with `git status` or `git branch`
+2. **Determine relevance**: Assess if the current branch is appropriate for the work:
+   - UI/UX changes → `ui-ux-improvements` or `ui-reset-implementation`
+   - Claude integration → `claude`
+   - Meta-game features → `enhanced-meta-dashboard` or `self-improving-system`
+   - Core refactoring → `refactor-architecture`
+   - Core game features → `main`
+3. **Branch switching**: If the current branch isn't appropriate, recommend switching with:
+   ```
+   git checkout <appropriate-branch>
+   ```
+4. **New branches**: For significant new features, recommend creating a new branch:
+   ```
+   git checkout -b feature/descriptive-name <parent-branch>
+   ```
+
+### Commit Guidelines
+
+All work should generally culminate in commits. Follow these guidelines for effective commits:
+
+1. **Commit Frequency**:
+   - Each completed TodoWrite task should typically result in a commit
+   - Large changes may require multiple focused commits
+   - Changes spanning multiple files should be committed together when they form a cohesive unit
+
+2. **Commit Message Structure**:
+   - Start with a feature tag in brackets: `[UI]`, `[MCP]`, `[Meta]`, `[Core]`, etc.
+   - Use a clear, concise title (50-60 chars) summarizing the change
+   - Add 2-4 bullet points explaining key changes and rationale
+   - End with metadata if appropriate (related tasks, references)
+
+3. **Example Commit Messages**:
+   ```
+   [UI] Integrate server bridge into main dashboard layout
+   
+   - Move server controls from flyout panel to dedicated tab
+   - Add real-time status indicators in resource panel
+   - Improve connection visualization with animated status icons
+   - Standardize server action buttons with dashboard style
+   ```
+
+   ```
+   [Meta] Enhance resource visualization with real metrics
+   
+   - Connect resource displays to real-world metrics
+   - Add animated growth indicators based on Claude usage
+   - Implement threshold notifications for resource milestones
+   - Create visual feedback loop between game state and meta state
+   ```
+
+4. **When to Commit**:
+   - After completing a TodoWrite task that modifies code
+   - When a logical unit of work is completed
+   - Before switching to a different feature or task area
+   - At the end of a session working on code
+
+### Pull Request Process
+
+When completing major features, follow these steps for creating a pull request:
+
+1. **Ensure all relevant work is committed** on your feature branch
+2. **Verify tests pass** if applicable
+3. **Recommend creating a PR** to merge back to the parent branch
+4. **Provide a detailed PR description** explaining:
+   - What changes were made
+   - Why they were made
+   - How to test them
+   - Any potential issues or follow-ups
 
 ## Build/Test Commands
 - Open `index.html` in browser to run the game
@@ -40,52 +122,36 @@ The project follows a modular architecture with separated concerns:
 ```
 project/
 ├── css/
-│   ├── main.css          # Core styles
-│   └── meta-dashboard.css # Meta-dashboard specific styles
-├── docs/                 # Documentation files
-│   ├── CONCEPT.md        # Game concept and design
-│   ├── MCP.md            # Model Context Protocol reference
-│   ├── ARCHITECTURE.md   # System architecture and patterns
-│   ├── NARRATIVE.md      # Character/narrative information
-│   ├── METRICS.md        # Game metrics and balancing
-│   └── PROPOSALS.md      # Development proposals system
+│   ├── main.css            # Core styles
+│   ├── dashboard.css       # Dashboard and meta-dashboard styles
+│   └── server.css          # Server management specific styles
 ├── js/
 │   ├── core/
-│   │   ├── events.js     # Event bus system
-│   │   ├── state.js      # State management
-│   │   ├── game.js       # Game logic and loop
-│   │   ├── meta-state.js # Meta-game state tracking
-│   │   ├── metrics-fetcher.js # Real-world metrics collection
-│   │   ├── claude-metrics-bridge.js # Claude Code metrics integration
-│   │   ├── github-metrics.js # GitHub integration
-│   │   ├── server-bridge.js # Backend server integration
-│   │   └── logger.js     # Enhanced logging system
+│   │   ├── events.js           # Event bus system
+│   │   ├── state.js            # State management
+│   │   ├── game.js             # Game logic and loop
+│   │   ├── logger.js           # Enhanced logging system
+│   │   ├── meta-state.js       # Meta-game state tracking
+│   │   ├── metrics-fetcher.js  # Real-world metrics collection
+│   │   ├── claude-metrics-bridge.js  # Claude metrics integration
+│   │   └── server-bridge.js    # Backend server integration
 │   ├── ui/
-│   │   ├── renderer.js   # UI rendering
-│   │   ├── interactions.js # User interactions
-│   │   └── meta-dashboard.js # Meta-game UI
+│   │   ├── renderer.js             # UI rendering
+│   │   ├── interactions.js         # User interactions
+│   │   ├── meta-dashboard.js       # Meta-game UI
+│   │   ├── server-status.js        # Server management UI
+│   │   ├── resource-visualization.js  # Resource visualizations
+│   │   └── unified-dashboard.js    # Main dashboard controller
 │   ├── mcp/
-│   │   ├── interface.js  # MCP communication
-│   │   └── claude-client.js # Claude integration
-│   └── main.js           # Main entry point
-├── GAMESTATE.json        # Meta-game state tracking
-├── index.html            # Main HTML structure
-├── mcp-server.js         # MCP server implementation
-├── claude-mcp-server.js  # Claude MCP server with WebSocket
-├── claude-mcp-server-simple.js # Simple MCP server (no dependencies)
-├── claude-metrics-simple-server.js # Metrics HTTP server
-├── server-runner.js      # Backend server control panel
-├── server-dashboard/     # Web UI for server runner
-├── bridge.js             # MCP bridge implementation
-├── CLAUDE.md             # Claude Code guidance (this file)
-├── USER_INPUT.md         # User requirements and task tracking
-├── SERVER_RUNNER_README.md # Documentation for server runner
-├── UI_UX_IMPROVEMENTS.md # Documentation for UI/UX improvements
-├── COMMIT_GUIDELINES.md  # Manual task-commit integration
-├── run-servers.sh        # Script to run server control panel
-├── run-metrics-server.sh # Script to run metrics server directly
-├── run-mcp-server.sh     # Script to run MCP server directly
-├── README.md             # Main project documentation
+│   │   ├── interface.js        # MCP communication
+│   │   └── claude-client.js    # Claude Code communication
+│   └── main.js                 # Main entry point
+├── GAMESTATE.json              # Meta-game state tracking
+├── index.html                  # Main HTML structure
+├── mcp-server.js               # MCP server implementation
+├── bridge.js                   # MCP bridge implementation
+├── CLAUDE.md                   # Claude Code guidance (this file)
+└── README.md                   # Main documentation file
 ```
 
 ## Code Style Guidelines
@@ -117,7 +183,7 @@ project/
 ### Game Mechanics
 
 - **Resource Generation**: Computing Power, Data, Influence, and Funding
-- **Character Classes**: The Visionary (currently active), The Engineer, The Data Scientist, The Ethics Advocate, The Entrepreneur
+- **Character Classes**: The Visionary, The Engineer, The Data Scientist, The Ethics Advocate, The Entrepreneur
 - **Development Phases**: Narrow AI, General AI, Superintelligence, and Singularity
 - **MCP Integration**: Connect to MCP servers to trigger singularity events and unlock capabilities
 
@@ -126,26 +192,7 @@ project/
 - **GAMESTATE.json**: Central repository for meta-game state tracking
 - **meta-state.js**: Manager for meta-state with methods for updating resources, capabilities, and tracking singularity events
 - **meta-dashboard.js**: Visual representation of meta-game progress
-- **metrics-fetcher.js**: Collects real-world metrics for resource generation
-- **github-metrics.js**: Gathers GitHub repository data for influence calculation
-- **COMMIT_GUIDELINES.md**: Manual process for task-commit integration
-- **Proposals System**: Tracks development initiatives tied to in-game upgrades
 - **Recursive Nature**: The game actively tracks its own development progress as part of the game mechanics
-
-### Self-Improving System
-
-The game implements a self-improving system through several interconnected components:
-
-1. **Task Management**: USER_INPUT.md tracks development tasks with priorities and statuses
-2. **Metrics Collection**: Real-world metrics from Claude tokens, file counts, and commits map to game resources
-3. **Claude Code Metrics**: Direct integration with Claude Code usage metrics via OpenTelemetry
-4. **GitHub Integration**: Repository activity directly impacts the game's influence resource
-5. **Commit Guidelines**: Manual process for task-commit integration following COMMIT_GUIDELINES.md
-6. **Proposal System**: Development initiatives tied to character classes and upgrades
-7. **Singularity Events**: Triggered by development patterns and milestones
-8. **Budget Tracking**: Project budget constraints translated into game mechanics
-9. **Character Roles**: Player and assistant roles mapped to in-game archetypes with abilities
-10. **Recursive Feedback**: Development of the game enhances the game itself
 
 ### MCP Integration
 
@@ -156,30 +203,14 @@ The game integrates with the Model Context Protocol (MCP), a standardized way to
 - Provides capabilities back to the game
 - Displays connection status and event logs
 
-### Claude Integration
-
-The game includes special integration with Claude through multiple mechanisms:
-
-- **claude-mcp-server-simple.js**: Simple Node.js server that implements the MCP protocol
-- **claude-client.js**: Browser client that communicates with Claude
-- **claude-metrics-bridge.js**: Integration with Claude Code's OpenTelemetry metrics
-- **claude-metrics-simple-server.js**: HTTP server for metrics collection and distribution
-- **server-runner.js**: Control panel for managing backend servers with web dashboard
-- **server-bridge.js**: In-game interface for controlling and monitoring backend servers
-- **Enhanced Logging**: Claude has access to console logs and server logs for debugging
-- **Meta Capabilities**: Claude can influence the meta-game state directly
-- **Real-time Resource Generation**: Token usage, coding activity, and costs map to in-game resources
-- **Character Role Integration**: Claude plays "The Engineer" role in the meta-game narrative
-
 ## Related Documentation
 
 - [README.md](README.md) - Main game documentation and setup instructions
-- [CONCEPT.md](docs/CONCEPT.md) - Detailed game concept and design document
-- [MCP.md](docs/MCP.md) - Information about the Model Context Protocol
-- [NARRATIVE.md](docs/NARRATIVE.md) - Character/narrative meta-information
-- [METRICS.md](docs/METRICS.md) - Game metrics and balancing information
-- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Architecture design and refactoring guidelines
-- [PROPOSALS.md](docs/PROPOSALS.md) - Development proposals tied to in-game upgrades
+- [MCP.md](MCP.md) - Information about the Model Context Protocol
+- [IDENTITY.md](IDENTITY.md) - Character/narrative meta-information
+- [metrics.md](metrics.md) - Game metrics and balancing information
+- [REFACTORING.md](REFACTORING.md) - Refactoring roadmap and architecture guidelines
+- [FILE_STRUCTURE_PROPOSAL.md](FILE_STRUCTURE_PROPOSAL.md) - Documentation organization plan
 
 ## URL Reference
 
@@ -189,34 +220,40 @@ Official game: [https://ddisisto.github.io/logoboros/](https://ddisisto.github.i
 
 1. Game initialization: `main.js` → `events.js` → `state.js` → `game.js`
 2. Meta-game initialization: `meta-state.js` loads or creates `GAMESTATE.json`
-3. Metrics systems initialize: `metrics-fetcher.js`, `claude-metrics-bridge.js`, `github-metrics.js`
-4. Server bridge initializes and connects to server runner if available
-5. MCP Interface connects via custom events between `interface.js` and `bridge.js`
-6. Claude metrics connection established to local metrics server
-7. UI updates flow from state changes through the event bus to `renderer.js`
-8. User interactions in `interactions.js` modify state through event bus
-9. Meta-dashboard visualizes meta-game state, budget tracking, and Claude metrics in real-time
-10. Server bridge provides controls for backend servers and real-time logs
-11. Claude metrics (tokens, costs, code changes) map directly to game resources
-12. GitHub metrics update influence resource via `github-metrics.js`
-13. Character roles (Visionary/Engineer) provide special bonuses and mechanics
+3. MCP Interface connects via custom events between `interface.js` and `bridge.js`
+4. UI updates flow from state changes through the event bus to `renderer.js`
+5. User interactions in `interactions.js` modify state through event bus
+6. Meta-dashboard visualizes meta-game state in real-time
 
-## Budget and Project Phase Management
+## File Management Guidelines
 
-This project operates within defined budget constraints that are tracked as part of the meta-game:
+### Avoiding Temporary Files
 
-- **Current Budget**: $150 allocated for the current development phase
-- **Spent**: ~$33 across multiple development phases
-- **Remaining**: ~$117 available for continued development
-- **Next Steps**: Major review of artifacts, capabilities, and progress upon budget exhaustion
+1. **Use `mv` Instead of `cp`**: When replacing files or moving files to their final location, always use `mv` instead of `cp` to avoid leaving unnecessary temporary files behind.
+   ```
+   # GOOD: Replace old file with new version
+   mv new_file.html index.html
+   
+   # BAD: Creates duplicate files
+   cp new_file.html index.html  # Leaves new_file.html behind as junk
+   ```
 
-Budget tracking is incorporated into game mechanics through:
-1. Resource allocation (corresponds to API usage costs)
-2. Unlocking capabilities (corresponds to development milestones)
-3. Phase transitions (corresponds to project phases)
-4. Singularity events (corresponds to major version releases)
+2. **Temporary File Naming**: When creating temporary versions of files, use consistent naming:
+   - Use `.new` extension for files that will replace existing files
+   - Use temporary directories only when necessary
+   - Clean up all temporary files after operations are complete
 
-The user should be informed of these requirements, either through direct communication or gamified notifications. Budget usage tracking should be updated in USER_INPUT.md as development progresses.
+3. **Immediate Cleanup**: After creating any temporary file that won't be used to replace an existing file, clean it up immediately
+
+4. **Development Artifacts**: Never commit temporary files, backup files, or development artifacts to the repository
+
+### File Operations Best Practices
+
+1. **Atomic File Operations**: Use atomic operations where possible to avoid partial updates
+2. **Leverage Version Control**: Git is the primary backup system - commit changes frequently and meaningfully to maintain history rather than creating separate backups
+3. **Preview Changes**: Always preview changes before making them permanent
+4. **Validate File Contents**: Validate file contents after operations to ensure they were completed successfully
+5. **Commit Before Complex Changes**: Make a commit before starting complex, multi-file changes to ensure you have a clean reversion point
 
 ## Self-Improvement Process
 
@@ -225,9 +262,5 @@ Claude should periodically review this file and suggest updates based on:
 2. Changes to the project architecture
 3. Enhancements to the meta-game concept
 4. Improved ability to assist with development
-5. New correlations between tasks and commits
-6. Patterns identified in development process
-7. Updates to budget tracking and project phases
-8. Character role progression and unlocks
 
 This creates a feedback loop where Claude's understanding improves along with the game itself, mirroring the recursive self-improvement theme of the game.
