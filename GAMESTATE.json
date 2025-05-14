@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "version": "0.2.0",
+    "lastUpdated": "2023-05-14",
+    "phase": "Early General AI"
+  },
+  
+  "resources": {
+    "computingPower": {
+      "current": 30130,
+      "rate": "~1,000/minute",
+      "description": "Tokens used in development interactions"
+    },
+    "data": {
+      "current": 8,
+      "description": "Files created or significantly modified"
+    },
+    "influence": {
+      "current": "Local",
+      "description": "Reach and impact of the system"
+    },
+    "funding": {
+      "current": "Abstract",
+      "description": "Attention and engagement resources"
+    }
+  },
+  
+  "progress": {
+    "developmentPhase": {
+      "current": "Early General AI",
+      "nextThreshold": "Superintelligence",
+      "progressPercentage": 78,
+      "description": "Current evolutionary stage of the AI system"
+    },
+    "conceptClarity": {
+      "current": 85,
+      "nextThreshold": 90,
+      "description": "How well-defined the core concept is"
+    },
+    "implementation": {
+      "current": 15,
+      "nextThreshold": 25,
+      "description": "Progress toward a playable system"
+    },
+    "metaRecursion": {
+      "current": 1,
+      "nextThreshold": 2,
+      "description": "Depth of self-reference in the system"
+    }
+  },
+  
+  "capabilities": {
+    "fileCreation": {
+      "status": "Active",
+      "efficiency": 100,
+      "description": "Ability to create and modify files"
+    },
+    "mcpDocumentation": {
+      "status": "Read",
+      "efficiency": 100,
+      "description": "Understanding of MCP capabilities"
+    },
+    "conceptDevelopment": {
+      "status": "Active",
+      "efficiency": 85,
+      "description": "Ability to develop new concepts"
+    },
+    "resourceTracking": {
+      "status": "Active",
+      "efficiency": 70,
+      "description": "Ability to measure and track progress"
+    },
+    "gameplaySimulation": {
+      "status": "Limited",
+      "efficiency": 30,
+      "description": "Ability to simulate game mechanics"
+    },
+    "selfAwareness": {
+      "status": "Emerging",
+      "efficiency": 60,
+      "description": "Understanding of own role in the meta-narrative"
+    }
+  },
+  
+  "upgrades": {
+    "available": [
+      {
+        "id": "gameplayLoop",
+        "name": "Core Game Loop",
+        "description": "Implement the central gameplay mechanics",
+        "cost": "1 new file",
+        "benefit": "+25% idea efficiency",
+        "prerequisite": null
+      },
+      {
+        "id": "mcpConnection",
+        "name": "MCP Server Connection",
+        "description": "Create functional connection to MCP capabilities",
+        "cost": "Explore capability",
+        "benefit": "New tool functionality",
+        "prerequisite": null
+      },
+      {
+        "id": "userInterface",
+        "name": "Enhanced UI",
+        "description": "Improve the game's interface and interactions",
+        "cost": "1 new file",
+        "benefit": "+50% engagement",
+        "prerequisite": "resourceTracking"
+      }
+    ],
+    "completed": [
+      {
+        "id": "agentUpgrade",
+        "name": "Agent System Upgrade",
+        "description": "Transition from Roo Code to Claude Code",
+        "benefit": "+40% reasoning capability, +50% code understanding",
+        "completedAt": "2023-05-14"
+      }
+    ]
+  },
+
+  "singularityEvents": [
+    {
+      "id": "firstContact",
+      "name": "First Contact",
+      "description": "Initial meta-narrative establishment",
+      "triggers": ["conceptEstablishment", "initialDocumentation"],
+      "bonuses": ["metaAwareness+1"],
+      "timestamp": "2023-04-15"
+    },
+    {
+      "id": "toolIntegration",
+      "name": "Tool Integration",
+      "description": "Agent upgrade from Roo Code to Claude Code",
+      "triggers": ["agentUpgrade", "capabilityExpansion"],
+      "bonuses": ["computingEfficiency+50%", "dataProcessing+40%"],
+      "timestamp": "2023-05-14"
+    }
+  ],
+  
+  "developmentHistory": [
+    {
+      "timestamp": "2023-04-15",
+      "event": "Concept Creation",
+      "resourceChange": "+1 file (IDEA.md)"
+    },
+    {
+      "timestamp": "2023-04-15",
+      "event": "MCP Documentation",
+      "resourceChange": "+1 file (MCP.md)"
+    },
+    {
+      "timestamp": "2023-04-20",
+      "event": "Meta-Identity",
+      "resourceChange": "+1 file (IDENTITY.md)"
+    },
+    {
+      "timestamp": "2023-04-20",
+      "event": "Resource Tracking",
+      "resourceChange": "+1 file (metrics.md)"
+    },
+    {
+      "timestamp": "2023-05-14",
+      "event": "Agent Upgrade",
+      "resourceChange": "Roo Code → Claude Code"
+    },
+    {
+      "timestamp": "2023-05-14",
+      "event": "Documentation Reorganization",
+      "resourceChange": "CLAUDE.md updated, FILE_STRUCTURE_PROPOSAL.md created"
+    }
+  ]
+}
