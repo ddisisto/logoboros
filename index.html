@@ -30,13 +30,59 @@
             </div>
         </div>
         
-        <!-- Tab Navigation -->
-        <div class="tab-navigation">
-            <button class="tab-button" data-tab="main">Main</button>
-            <button class="tab-button" data-tab="upgrades">Upgrades</button>
-            <button class="tab-button active" data-tab="character">Character</button>
-            <button class="tab-button" data-tab="profile">Profile</button>
+        <!-- Character Selection Screen (Entry Screen) -->
+        <div id="character-selection-screen" class="entry-screen">
+            <div class="opening-screen">
+                <h2>Welcome to AI Singularity</h2>
+                <p class="intro-text">Choose your character to begin your journey into AI development and technological transcendence.</p>
+                
+                <div class="character-select" id="characterSelect">
+                    <div class="character" data-character="visionary">
+                        <h3>The Visionary</h3>
+                        <p>A brilliant but eccentric technologist with unconventional ideas.</p>
+                        <p><strong>Bonus:</strong> +50% to algorithm breakthroughs</p>
+                        <p><strong>Special:</strong> "Eureka Moments" randomly unlock technologies</p>
+                    </div>
+                    <div class="character" data-character="engineer">
+                        <h3>The Engineer</h3>
+                        <p>A methodical, hands-on developer focused on practical solutions.</p>
+                        <p><strong>Bonus:</strong> +30% computing power efficiency</p>
+                        <p><strong>Special:</strong> "Optimization" improves existing systems</p>
+                    </div>
+                    <div class="character" data-character="dataScientist">
+                        <h3>The Data Scientist</h3>
+                        <p>A pattern-recognition specialist who excels at extracting insights.</p>
+                        <p><strong>Bonus:</strong> +40% data collection rate</p>
+                        <p><strong>Special:</strong> "Pattern Recognition" reveals hidden connections</p>
+                    </div>
+                    <div class="character" data-character="ethicsAdvocate">
+                        <h3>The Ethics Advocate</h3>
+                        <p>A thoughtful developer concerned with responsible AI.</p>
+                        <p><strong>Bonus:</strong> +25% influence generation</p>
+                        <p><strong>Special:</strong> "Ethical Framework" prevents negative events</p>
+                    </div>
+                    <div class="character" data-character="entrepreneur">
+                        <h3>The Entrepreneur</h3>
+                        <p>A business-minded innovator focused on applications and growth.</p>
+                        <p><strong>Bonus:</strong> +60% funding generation</p>
+                        <p><strong>Special:</strong> "Venture Capital" provides funding boosts</p>
+                    </div>
+                </div>
+                
+                <div class="start-instructions">
+                    <p>Click on a character to select it and begin your AI development journey.</p>
+                </div>
+            </div>
         </div>
+
+        <!-- Main Game UI (Hidden until character is selected) -->
+        <div id="game-ui" style="display: none;">
+            <!-- Tab Navigation -->
+            <div class="tab-navigation">
+                <button class="tab-button active" data-tab="main">Main</button>
+                <button class="tab-button" data-tab="upgrades">Upgrades</button>
+                <button class="tab-button" data-tab="profile">Profile</button>
+            </div>
         
         <div class="grid">
             <div>
@@ -136,51 +182,6 @@
                     </div>
                 </div>
                 
-                <!-- Character Tab (default visible) -->
-                <div class="tab-pane active" id="character-tab">
-                    <div class="opening-screen">
-                        <h2>Welcome to AI Singularity</h2>
-                        <p class="intro-text">Choose your character to begin your journey into AI development and technological transcendence.</p>
-                        
-                        <div class="character-select" id="characterSelect">
-                            <div class="character" data-character="visionary">
-                                <h3>The Visionary</h3>
-                                <p>A brilliant but eccentric technologist with unconventional ideas.</p>
-                                <p><strong>Bonus:</strong> +50% to algorithm breakthroughs</p>
-                                <p><strong>Special:</strong> "Eureka Moments" randomly unlock technologies</p>
-                            </div>
-                            <div class="character" data-character="engineer">
-                                <h3>The Engineer</h3>
-                                <p>A methodical, hands-on developer focused on practical solutions.</p>
-                                <p><strong>Bonus:</strong> +30% computing power efficiency</p>
-                                <p><strong>Special:</strong> "Optimization" improves existing systems</p>
-                            </div>
-                            <div class="character" data-character="dataScientist">
-                                <h3>The Data Scientist</h3>
-                                <p>A pattern-recognition specialist who excels at extracting insights.</p>
-                                <p><strong>Bonus:</strong> +40% data collection rate</p>
-                                <p><strong>Special:</strong> "Pattern Recognition" reveals hidden connections</p>
-                            </div>
-                            <div class="character" data-character="ethicsAdvocate">
-                                <h3>The Ethics Advocate</h3>
-                                <p>A thoughtful developer concerned with responsible AI.</p>
-                                <p><strong>Bonus:</strong> +25% influence generation</p>
-                                <p><strong>Special:</strong> "Ethical Framework" prevents negative events</p>
-                            </div>
-                            <div class="character" data-character="entrepreneur">
-                                <h3>The Entrepreneur</h3>
-                                <p>A business-minded innovator focused on applications and growth.</p>
-                                <p><strong>Bonus:</strong> +60% funding generation</p>
-                                <p><strong>Special:</strong> "Venture Capital" provides funding boosts</p>
-                            </div>
-                        </div>
-                        
-                        <div class="start-instructions">
-                            <p>Click on a character to select it and begin your AI development journey.</p>
-                            <p>After selecting a character, navigate to the <strong>Main</strong> tab to start playing.</p>
-                        </div>
-                    </div>
-                </div>
                 
                 <!-- Profile Tab -->
                 <div class="tab-pane" id="profile-tab">
@@ -246,9 +247,33 @@
     <script src="js/core/events.js"></script>
     <script src="js/core/state.js"></script>
     <script src="js/core/game.js"></script>
+    <script src="js/core/meta-state.js"></script>
     <script src="js/ui/renderer.js"></script>
     <script src="js/ui/interactions.js"></script>
+    <script src="js/ui/meta-dashboard.js"></script>
     <script src="js/mcp/interface.js"></script>
     <script src="js/main.js"></script>
+    
+    <!-- Meta-Dashboard Toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create meta-dashboard toggle button
+            const actionsCard = document.querySelector('.card');
+            if (actionsCard) {
+                const metaButton = document.createElement('button');
+                metaButton.id = 'toggle-meta-dashboard';
+                metaButton.textContent = 'Toggle Meta-Dashboard';
+                metaButton.className = 'meta-btn';
+                actionsCard.appendChild(metaButton);
+                
+                // Add event listener
+                metaButton.addEventListener('click', function() {
+                    if (window.metaDashboard) {
+                        window.metaDashboard.toggle();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

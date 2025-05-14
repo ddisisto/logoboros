@@ -77,6 +77,20 @@ h1 {
     border-bottom-color: var(--primary);
 }
 
+/* Special styling for Character tab */
+.tab-button[data-tab="character"] {
+    background-color: rgba(255, 0, 110, 0.1);
+    color: var(--accent);
+    font-weight: bold;
+    border: 1px solid var(--accent);
+    border-radius: 4px 4px 0 0;
+}
+
+.tab-button[data-tab="character"].active {
+    background-color: rgba(255, 0, 110, 0.2);
+    border-bottom-color: var(--accent);
+}
+
 /* Tab Content Styles */
 .tab-pane {
     display: none;
@@ -135,12 +149,31 @@ h1 {
     margin-bottom: 20px;
 }
 
+/* Entry Screen Styles */
+.entry-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--background);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
 /* Opening Screen Styles */
 .opening-screen {
     background-color: var(--card-bg);
     border-radius: 8px;
     padding: 30px;
     text-align: center;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .opening-screen h2 {
@@ -293,6 +326,15 @@ button.singularity:hover {
     background-color: #e0005f;
 }
 
+button.meta-btn {
+    background-color: var(--secondary);
+    border: 1px solid #6929c4;
+}
+
+button.meta-btn:hover {
+    background-color: #6929c4;
+}
+
 button:disabled {
     background-color: #30363d;
     cursor: not-allowed;
@@ -352,6 +394,26 @@ input, select, textarea {
     border: 1px solid #30363d;
     color: var(--foreground);
     border-radius: 4px;
+}
+
+/* Character display in profile */
+.character-display {
+    background-color: rgba(255, 0, 110, 0.1);
+    border-left: 4px solid var(--accent);
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+
+.character-display h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: var(--accent);
+}
+
+.character-display p {
+    margin: 0;
+    font-weight: bold;
 }
 
 textarea {
