@@ -28,8 +28,27 @@ class UIRenderer {
         // Initial render
         this.render();
         
+        // Check if a character is already selected
+        this.checkCharacterState();
+        
         this.initialized = true;
         console.log('UI Renderer initialized');
+    }
+    
+    /**
+     * Check character state and adjust UI accordingly
+     */
+    checkCharacterState() {
+        const state = window.gameState.getState();
+        
+        // If no character is selected, ensure entry screen is visible
+        if (!state.character) {
+            const characterSelectionScreen = document.getElementById('character-selection-screen');
+            const gameUI = document.getElementById('game-ui');
+            
+            if (characterSelectionScreen) characterSelectionScreen.style.display = 'flex';
+            if (gameUI) gameUI.style.display = 'none';
+        }
     }
 
     /**
@@ -79,6 +98,18 @@ class UIRenderer {
         window.eventBus.subscribe('character:selected', () => this.renderCharacterSelection());
         window.eventBus.subscribe('upgrade:purchased', (upgradeId) => this.renderUpgradePurchased(upgradeId));
         window.eventBus.subscribe('phase:changed', () => this.renderPhase());
+        window.eventBus.subscribe('game:started', () => this.renderGameStarted());
+    }
+    
+    /**
+     * Render game started state
+     */
+    renderGameStarted() {
+        // Update UI elements that should be visible after game starts
+        const resourcesPanel = document.querySelector('.resources');
+        if (resourcesPanel) {
+            resourcesPanel.style.display = 'block';
+        }
     }
 
     /**
@@ -235,19 +266,20 @@ class UIRenderer {
      * Render character selection
      */
     renderCharacterSelection() {
-        if (!this.elements.characterSelect) return;
+        const characterSelect = document.getElementById('characterSelect');
+        if (!characterSelect) return;
         
         const state = window.gameState.getState();
         
         // Remove selected class from all characters
-        const characters = this.elements.characterSelect.querySelectorAll('.character');
+        const characters = characterSelect.querySelectorAll('.character');
         characters.forEach(el => {
             el.classList.remove('selected');
         });
         
         // Add selected class to chosen character
         if (state.character) {
-            const selectedCharacter = this.elements.characterSelect.querySelector(`[data-character="${state.character}"]`);
+            const selectedCharacter = characterSelect.querySelector(`[data-character="${state.character}"]`);
             if (selectedCharacter) {
                 selectedCharacter.classList.add('selected');
             }
