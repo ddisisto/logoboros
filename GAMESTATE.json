@@ -1,27 +1,31 @@
 {
   "meta": {
-    "version": "0.2.0",
+    "version": "0.3.0",
     "lastUpdated": "2023-05-14",
-    "phase": "Early General AI"
+    "phase": "General AI"
   },
   
   "resources": {
     "computingPower": {
       "current": 30130,
       "rate": "~1,000/minute",
-      "description": "Tokens used in development interactions"
+      "description": "Tokens used in development interactions",
+      "realMetric": "claudeTokenCount"
     },
     "data": {
       "current": 8,
-      "description": "Files created or significantly modified"
+      "description": "Files created or significantly modified",
+      "realMetric": "fileCount"
     },
     "influence": {
       "current": "Local",
-      "description": "Reach and impact of the system"
+      "description": "Reach and impact of the system",
+      "realMetric": "commitCount"
     },
     "funding": {
       "current": "Abstract",
-      "description": "Attention and engagement resources"
+      "description": "Attention and engagement resources",
+      "realMetric": "claudeCost"
     }
   },
   
@@ -38,13 +42,13 @@
       "description": "How well-defined the core concept is"
     },
     "implementation": {
-      "current": 15,
-      "nextThreshold": 25,
+      "current": 35,
+      "nextThreshold": 50,
       "description": "Progress toward a playable system"
     },
     "metaRecursion": {
-      "current": 1,
-      "nextThreshold": 2,
+      "current": 2,
+      "nextThreshold": 3,
       "description": "Depth of self-reference in the system"
     }
   },
@@ -136,6 +140,14 @@
       "triggers": ["agentUpgrade", "capabilityExpansion"],
       "bonuses": ["computingEfficiency+50%", "dataProcessing+40%"],
       "timestamp": "2023-05-14"
+    },
+    {
+      "id": "recursiveBranching",
+      "name": "Recursive Branching",
+      "description": "Implementation of meta-game tracking and dashboard",
+      "triggers": ["metaStateImplementation", "branchCreation"],
+      "bonuses": ["metaRecursion+1", "conceptClarity+15%", "implementation+20%"],
+      "timestamp": "2023-05-14"
     }
   ],
   
@@ -169,6 +181,21 @@
       "timestamp": "2023-05-14",
       "event": "Documentation Reorganization",
       "resourceChange": "CLAUDE.md updated, FILE_STRUCTURE_PROPOSAL.md created"
+    },
+    {
+      "timestamp": "2023-05-14",
+      "event": "Meta-Game System Implementation",
+      "resourceChange": "+3 files (GAMESTATE.json, meta-state.js, meta-dashboard.js)"
+    },
+    {
+      "timestamp": "2023-05-14",
+      "event": "UI Integration",
+      "resourceChange": "Added meta-dashboard toggle and CSS styling"
+    },
+    {
+      "timestamp": "2023-05-14",
+      "event": "First Recursion Singularity",
+      "resourceChange": "Game now tracking its own development"
     }
   ]
 }

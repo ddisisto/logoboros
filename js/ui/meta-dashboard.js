@@ -53,6 +53,7 @@ class MetaDashboard {
         header.innerHTML = `
             <h2>AI Singularity Meta-Game</h2>
             <div class="meta-controls">
+                <button id="meta-metrics-btn" title="Fetch latest metrics">📊</button>
                 <button id="meta-refresh-btn" title="Refresh dashboard">↻</button>
                 <button id="meta-toggle-btn" title="Toggle dashboard">×</button>
             </div>
@@ -90,6 +91,7 @@ class MetaDashboard {
         this.elements.capabilitiesContent = capabilitiesSection.querySelector('.section-content');
         this.elements.upgradesContent = upgradesSection.querySelector('.section-content');
         this.elements.historyContent = historySection.querySelector('.section-content');
+        this.elements.metricsBtn = document.getElementById('meta-metrics-btn');
         this.elements.refreshBtn = document.getElementById('meta-refresh-btn');
         this.elements.toggleBtn = document.getElementById('meta-toggle-btn');
         
@@ -360,6 +362,40 @@ class MetaDashboard {
             .efficiency-low {
                 background: linear-gradient(90deg, #c74a4a, #ff8888);
             }
+            
+            /* Notification styles */
+            .meta-notification {
+                position: absolute;
+                top: 50px;
+                right: 10px;
+                background-color: rgba(30, 30, 30, 0.95);
+                color: #fff;
+                padding: 8px 12px;
+                border-radius: 4px;
+                font-size: 12px;
+                z-index: 10000;
+                opacity: 0;
+                transform: translateX(20px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+            
+            .meta-notification.success {
+                border-left: 3px solid #88ff88;
+            }
+            
+            .meta-notification.warning {
+                border-left: 3px solid #ffcc00;
+            }
+            
+            .meta-notification.error {
+                border-left: 3px solid #ff8888;
+            }
+            
+            .meta-notification.show {
+                opacity: 1;
+                transform: translateX(0);
+            }
         `;
     }
 
@@ -374,11 +410,29 @@ class MetaDashboard {
             });
         }
         
+        // Listen for metrics button click
+        if (this.elements.metricsBtn) {
+            this.elements.metricsBtn.addEventListener('click', () => {
+                if (window.metricsFetcher) {
+                    window.metricsFetcher.fetchMetrics()
+                        .then(() => {
+                            this.showNotification('Metrics updated successfully');
+                        })
+                        .catch(error => {
+                            this.showNotification('Error updating metrics', 'error');
+                        });
+                } else {
+                    this.showNotification('Metrics fetcher not available', 'warning');
+                }
+            });
+        }
+        
         // Listen for refresh button click
         if (this.elements.refreshBtn) {
             this.elements.refreshBtn.addEventListener('click', () => {
                 if (window.metaStateManager) {
                     this.updateDashboard(window.metaStateManager.getState());
+                    this.showNotification('Dashboard refreshed');
                 }
             });
         }
@@ -406,6 +460,18 @@ class MetaDashboard {
             
             window.eventBus.subscribe('meta:dashboard:toggle', () => {
                 this.toggle();
+            });
+            
+            // Listen for metrics updates
+            window.eventBus.subscribe('metrics:updated', metrics => {
+                if (window.metaStateManager) {
+                    this.updateDashboard(window.metaStateManager.getState());
+                    this.showNotification('Real-world metrics updated');
+                }
+            });
+            
+            window.eventBus.subscribe('metrics:initialized', () => {
+                this.showNotification('Metrics system initialized');
             });
         }
         
@@ -658,6 +724,41 @@ class MetaDashboard {
         } else {
             this.show();
         }
+    }
+    
+    /**
+     * Show a notification in the dashboard
+     * @param {string} message - Notification message
+     * @param {string} type - Notification type (success, warning, error)
+     */
+    showNotification(message, type = 'success') {
+        // Create notification element if it doesn't exist
+        let notification = document.querySelector('.meta-notification');
+        
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.className = 'meta-notification';
+            this.elements.container.appendChild(notification);
+        }
+        
+        // Set notification content and style
+        notification.textContent = message;
+        notification.className = `meta-notification ${type}`;
+        
+        // Show notification
+        setTimeout(() => notification.classList.add('show'), 10);
+        
+        // Hide notification after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            
+            // Remove element after animation completes
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
     }
 }
 
