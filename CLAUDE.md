@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**IMPORTANT**: Always check the [USER_INPUT.md](USER_INPUT.md) file for critical user instructions, budget tracking, and character role information. This file contains essential context that must be incorporated into your planning and implementation.
+
 ## Project Overview
 
 AI Singularity is a web-based incremental game where players guide the evolution of AI systems through various stages of development, unlocking new capabilities, resources, and ultimately reaching singularity events that reset progress but provide powerful permanent bonuses.
@@ -21,6 +23,8 @@ This creates a fascinating recursive loop where:
 - The meta-state system tracks real-world progress as game resources
 - Each developer interaction represents a "singularity event" that advances capabilities
 - The TODO system directly connects to commit patterns, creating feedback loops
+- User adopts character roles (The Visionary, The Engineer, etc.) for meta-game progression
+- Budget tracking and project phase management are incorporated into the meta-game
 
 The Claude agent should regularly review and update this file to optimize its understanding of both the environment and itself simultaneously, creating a short recursive loop that drives improvement in both the concrete game and the meta-game.
 
@@ -36,7 +40,8 @@ The project follows a modular architecture with separated concerns:
 ```
 project/
 ├── css/
-│   └── main.css          # Core styles
+│   ├── main.css          # Core styles
+│   └── meta-dashboard.css # Meta-dashboard specific styles
 ├── docs/                 # Documentation files
 │   ├── CONCEPT.md        # Game concept and design
 │   ├── MCP.md            # Model Context Protocol reference
@@ -51,6 +56,7 @@ project/
 │   │   ├── game.js       # Game logic and loop
 │   │   ├── meta-state.js # Meta-game state tracking
 │   │   ├── metrics-fetcher.js # Real-world metrics collection
+│   │   ├── claude-metrics-bridge.js # Claude Code metrics integration
 │   │   ├── github-metrics.js # GitHub integration
 │   │   ├── todo-commit-system.js # Todo-commit integration
 │   │   └── logger.js     # Enhanced logging system
@@ -66,8 +72,10 @@ project/
 ├── index.html            # Main HTML structure
 ├── mcp-server.js         # MCP server implementation
 ├── claude-mcp-server.js  # Claude MCP server
+├── claude-metrics-simple-server.js # Metrics HTTP server
 ├── bridge.js             # MCP bridge implementation
 ├── CLAUDE.md             # Claude Code guidance (this file)
+├── USER_INPUT.md         # User requirements and task tracking
 ├── README.md             # Main project documentation
 ```
 
@@ -100,7 +108,7 @@ project/
 ### Game Mechanics
 
 - **Resource Generation**: Computing Power, Data, Influence, and Funding
-- **Character Classes**: The Visionary, The Engineer, The Data Scientist, The Ethics Advocate, The Entrepreneur
+- **Character Classes**: The Visionary (currently active), The Engineer, The Data Scientist, The Ethics Advocate, The Entrepreneur
 - **Development Phases**: Narrow AI, General AI, Superintelligence, and Singularity
 - **MCP Integration**: Connect to MCP servers to trigger singularity events and unlock capabilities
 
@@ -121,11 +129,14 @@ The game implements a self-improving system through several interconnected compo
 
 1. **Task Management**: The TODO system tracks development tasks with priorities and statuses
 2. **Metrics Collection**: Real-world metrics from Claude tokens, file counts, and commits map to game resources
-3. **GitHub Integration**: Repository activity directly impacts the game's influence resource
-4. **Todo-Commit Integration**: Completed tasks suggest commit messages, creating a planning-implementation loop
-5. **Proposal System**: Development initiatives tied to character classes and upgrades
-6. **Singularity Events**: Triggered by development patterns and milestones
-7. **Recursive Feedback**: Development of the game enhances the game itself
+3. **Claude Code Metrics**: Direct integration with Claude Code usage metrics via OpenTelemetry
+4. **GitHub Integration**: Repository activity directly impacts the game's influence resource
+5. **Todo-Commit Integration**: Completed tasks suggest commit messages, creating a planning-implementation loop
+6. **Proposal System**: Development initiatives tied to character classes and upgrades
+7. **Singularity Events**: Triggered by development patterns and milestones
+8. **Budget Tracking**: Project budget constraints translated into game mechanics
+9. **Character Roles**: Player and assistant roles mapped to in-game archetypes with abilities
+10. **Recursive Feedback**: Development of the game enhances the game itself
 
 ### MCP Integration
 
@@ -138,12 +149,16 @@ The game integrates with the Model Context Protocol (MCP), a standardized way to
 
 ### Claude Integration
 
-The game includes special integration with Claude through a custom MCP server:
+The game includes special integration with Claude through multiple mechanisms:
 
 - **claude-mcp-server.js**: Node.js server that creates a WebSocket connection
 - **claude-client.js**: Browser client that communicates with Claude
+- **claude-metrics-bridge.js**: Integration with Claude Code's OpenTelemetry metrics
+- **claude-metrics-simple-server.js**: HTTP server for metrics collection and distribution
 - **Enhanced Logging**: Claude has access to console logs for debugging
 - **Meta Capabilities**: Claude can influence the meta-game state directly
+- **Real-time Resource Generation**: Token usage, coding activity, and costs map to in-game resources
+- **Character Role Integration**: Claude plays "The Engineer" role in the meta-game narrative
 
 ## Related Documentation
 
@@ -163,13 +178,33 @@ Official game: [https://ddisisto.github.io/logoboros/](https://ddisisto.github.i
 
 1. Game initialization: `main.js` → `events.js` → `state.js` → `game.js`
 2. Meta-game initialization: `meta-state.js` loads or creates `GAMESTATE.json`
-3. Metrics systems initialize: `metrics-fetcher.js`, `github-metrics.js`, `todo-commit-system.js`
+3. Metrics systems initialize: `metrics-fetcher.js`, `claude-metrics-bridge.js`, `github-metrics.js`, `todo-commit-system.js`
 4. MCP Interface connects via custom events between `interface.js` and `bridge.js`
-5. UI updates flow from state changes through the event bus to `renderer.js`
-6. User interactions in `interactions.js` modify state through event bus
-7. Meta-dashboard visualizes meta-game state in real-time
-8. Completed todos generate commit suggestions via `todo-commit-system.js`
-9. GitHub metrics update influence resource via `github-metrics.js`
+5. Claude metrics connection established to local metrics server
+6. UI updates flow from state changes through the event bus to `renderer.js`
+7. User interactions in `interactions.js` modify state through event bus
+8. Meta-dashboard visualizes meta-game state, budget tracking, and Claude metrics in real-time
+9. Completed todos generate commit suggestions via `todo-commit-system.js`
+10. Claude metrics (tokens, costs, code changes) map directly to game resources
+11. GitHub metrics update influence resource via `github-metrics.js`
+12. Character roles (Visionary/Engineer) provide special bonuses and mechanics
+
+## Budget and Project Phase Management
+
+This project operates within defined budget constraints that are tracked as part of the meta-game:
+
+- **Current Budget**: $150 allocated for the current development phase
+- **Spent**: ~$33 across multiple development phases
+- **Remaining**: ~$117 available for continued development
+- **Next Steps**: Major review of artifacts, capabilities, and progress upon budget exhaustion
+
+Budget tracking is incorporated into game mechanics through:
+1. Resource allocation (corresponds to API usage costs)
+2. Unlocking capabilities (corresponds to development milestones)
+3. Phase transitions (corresponds to project phases)
+4. Singularity events (corresponds to major version releases)
+
+The user should be informed of these requirements, either through direct communication or gamified notifications. Budget usage tracking should be updated in USER_INPUT.md as development progresses.
 
 ## Self-Improvement Process
 
@@ -180,5 +215,7 @@ Claude should periodically review this file and suggest updates based on:
 4. Improved ability to assist with development
 5. New correlations between tasks and commits
 6. Patterns identified in development process
+7. Updates to budget tracking and project phases
+8. Character role progression and unlocks
 
 This creates a feedback loop where Claude's understanding improves along with the game itself, mirroring the recursive self-improvement theme of the game.

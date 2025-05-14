@@ -1,0 +1,760 @@
+/**
+ * Meta-Dashboard Styles for AI Singularity Game
+ * - Provides styles for the main meta-game dashboard interface
+ */
+
+/* Meta Dashboard Main Container */
+#meta-dashboard-container {
+    position: relative;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-family: monospace;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(58, 134, 255, 0.3);
+    width: 100%;
+}
+
+#meta-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(58, 134, 255, 0.2);
+}
+
+#meta-dashboard-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--primary);
+}
+
+.meta-controls {
+    display: flex;
+}
+
+.meta-controls button {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 8px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.meta-controls button:hover {
+    background: rgba(58, 134, 255, 0.2);
+    color: var(--primary);
+}
+
+/* Summary Bar */
+.meta-summary-bar {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 6px 12px;
+    border-bottom: 1px solid rgba(58, 134, 255, 0.2);
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+}
+
+.summary-icon {
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+.summary-value {
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* Tabs */
+.meta-tabs {
+    display: flex;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(58, 134, 255, 0.2);
+}
+
+.meta-tab-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 12px;
+    padding: 6px 10px;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.2s ease;
+    font-family: monospace;
+}
+
+.meta-tab-btn:hover {
+    background: rgba(58, 134, 255, 0.1);
+    color: #fff;
+}
+
+.meta-tab-btn.active {
+    background: rgba(58, 134, 255, 0.2);
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+
+/* Tab Content */
+.meta-dashboard-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    max-height: 400px;
+}
+
+.meta-tab-pane {
+    display: none;
+}
+
+.meta-tab-pane.active {
+    display: block;
+}
+
+.meta-tab-pane h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: var(--primary);
+    border-bottom: 1px solid rgba(58, 134, 255, 0.3);
+    padding-bottom: 4px;
+}
+
+/* Resources Grid */
+.meta-resources-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.meta-resource-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.meta-resource-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--primary);
+    font-size: 13px;
+}
+
+.meta-resource-value {
+    font-size: 16px;
+    margin-bottom: 3px;
+}
+
+.meta-resource-rate {
+    font-size: 11px;
+    color: #aaa;
+}
+
+.meta-resource-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+.meta-resource-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #8fb8ff);
+    border-radius: 2px;
+    width: 30%;
+}
+
+/* Progress Container */
+.meta-progress-container {
+    margin-bottom: 20px;
+}
+
+.meta-progress-item {
+    margin-bottom: 12px;
+}
+
+.meta-progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.meta-progress-name {
+    font-weight: bold;
+    color: #e0e0e0;
+    font-size: 13px;
+}
+
+.meta-progress-value {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.meta-progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.meta-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #8fb8ff);
+    border-radius: 3px;
+}
+
+/* News Container */
+.meta-news-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.meta-news-item {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.meta-news-timestamp {
+    font-size: 10px;
+    color: #888;
+    margin-bottom: 3px;
+}
+
+.meta-news-content {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Capabilities Container */
+.meta-capabilities-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.meta-capability-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.meta-capability-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.meta-capability-name {
+    font-weight: bold;
+    color: #e0e0e0;
+    font-size: 13px;
+}
+
+.meta-capability-status {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.meta-capability-description {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 8px;
+}
+
+.meta-capability-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.meta-capability-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+}
+
+/* Status Colors */
+.status-active {
+    background: rgba(58, 219, 118, 0.2);
+    color: #3adb76;
+}
+
+.status-limited {
+    background: rgba(255, 204, 0, 0.2);
+    color: #ffcc00;
+}
+
+.status-emerging {
+    background: rgba(255, 88, 88, 0.2);
+    color: #ff5858;
+}
+
+.status-read {
+    background: rgba(58, 134, 255, 0.2);
+    color: var(--primary);
+}
+
+/* Upgrade Items */
+.meta-upgrades-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.meta-upgrade-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.meta-upgrade-card:hover {
+    background: rgba(58, 134, 255, 0.1);
+    border-color: rgba(58, 134, 255, 0.3);
+}
+
+.meta-upgrade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.meta-upgrade-name {
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 13px;
+}
+
+.meta-upgrade-cost {
+    font-size: 11px;
+    color: var(--warning);
+}
+
+.meta-upgrade-description {
+    font-size: 11px;
+    color: #e0e0e0;
+    margin-bottom: 5px;
+}
+
+.meta-upgrade-benefit {
+    font-size: 11px;
+    color: var(--success);
+}
+
+/* History Items */
+.meta-history-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.meta-history-item {
+    padding: 8px;
+    border-left: 2px solid var(--primary);
+    padding-left: 10px;
+    margin-bottom: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0 4px 4px 0;
+}
+
+.meta-history-timestamp {
+    font-size: 10px;
+    color: #888;
+    margin-bottom: 3px;
+}
+
+.meta-history-event {
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+
+.meta-history-impact {
+    font-size: 11px;
+    color: var(--primary);
+}
+
+/* Notification Styles */
+.meta-notification {
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    background-color: rgba(30, 30, 30, 0.95);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 10000;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.meta-notification.success {
+    border-left: 3px solid var(--success);
+}
+
+.meta-notification.warning {
+    border-left: 3px solid var(--warning);
+}
+
+.meta-notification.error {
+    border-left: 3px solid var(--danger);
+}
+
+.meta-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Efficiency Bar Colors */
+.efficiency-high {
+    background: linear-gradient(90deg, var(--success), #7fff7f);
+}
+
+.efficiency-medium {
+    background: linear-gradient(90deg, var(--warning), #ffe17f);
+}
+
+.efficiency-low {
+    background: linear-gradient(90deg, var(--danger), #ff7f7f);
+}
+
+/* Action Buttons */
+.meta-action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.meta-action-btn {
+    background-color: rgba(58, 134, 255, 0.2);
+    color: var(--primary);
+    border: 1px solid rgba(58, 134, 255, 0.4);
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: monospace;
+}
+
+.meta-action-btn:hover {
+    background-color: rgba(58, 134, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.singularity-btn {
+    grid-column: span 2;
+    background-color: rgba(255, 0, 110, 0.2);
+    color: var(--accent);
+    border: 1px solid rgba(255, 0, 110, 0.4);
+}
+
+.singularity-btn:hover {
+    background-color: rgba(255, 0, 110, 0.3);
+}
+
+/* Integration with main game - adjustments */
+#game-ui {
+    display: flex !important;
+    flex-direction: column;
+}
+
+/* Budget Tracking */
+.meta-budget-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.meta-budget-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.meta-budget-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.meta-budget-label {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 3px;
+}
+
+.meta-budget-value {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.meta-budget-value:nth-child(2) {
+    color: var(--primary);
+}
+
+.meta-budget-value:nth-child(4) {
+    color: var(--danger);
+}
+
+.meta-budget-value:nth-child(6) {
+    color: var(--success);
+}
+
+.meta-budget-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin: 8px 0 15px 0;
+    overflow: hidden;
+}
+
+.meta-budget-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success), var(--warning));
+    border-radius: 4px;
+}
+
+.meta-budget-details {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 8px;
+}
+
+.meta-budget-detail-header {
+    font-size: 12px;
+    color: var(--primary);
+    margin-bottom: 6px;
+}
+
+.meta-budget-detail-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 5px;
+    color: #e0e0e0;
+}
+
+.meta-budget-detail-item span:last-child {
+    font-weight: bold;
+    color: var(--warning);
+}
+
+/* Claude Metrics Section */
+.meta-claude-metrics {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.meta-claude-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.meta-claude-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.meta-claude-title {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+.meta-claude-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 3px;
+}
+
+.meta-claude-subtitle {
+    font-size: 10px;
+    color: #888;
+}
+
+.meta-claude-progress {
+    margin-top: 10px;
+}
+
+.meta-claude-progress-row {
+    margin-bottom: 8px;
+}
+
+.meta-claude-progress-label {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 3px;
+}
+
+.meta-claude-progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.meta-claude-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #8fb8ff);
+    border-radius: 3px;
+    width: 0%;
+}
+
+.meta-claude-connection {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #888;
+}
+
+.meta-claude-connect-btn {
+    background: rgba(58, 134, 255, 0.2);
+    color: var(--primary);
+    border: 1px solid rgba(58, 134, 255, 0.4);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: monospace;
+}
+
+.meta-claude-connect-btn:hover {
+    background: rgba(58, 134, 255, 0.3);
+}
+
+.connection-status {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.connection-status.connected {
+    background: rgba(58, 219, 118, 0.2);
+    color: #3adb76;
+}
+
+.connection-status.disconnected {
+    background: rgba(255, 88, 88, 0.2);
+    color: #ff5858;
+}
+
+.connection-status.connecting {
+    background: rgba(255, 204, 0, 0.2);
+    color: #ffcc00;
+}
+
+/* Character Role Section */
+.meta-characters-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.meta-character-card {
+    display: flex;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.meta-character-card.active {
+    border-color: var(--primary);
+    background: rgba(58, 134, 255, 0.1);
+}
+
+.meta-character-icon {
+    font-size: 24px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+.meta-character-info {
+    flex: 1;
+}
+
+.meta-character-name {
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.meta-character-role {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 6px;
+}
+
+.meta-character-bonus {
+    font-size: 11px;
+    color: var(--success);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .meta-resources-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .meta-action-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .singularity-btn {
+        grid-column: span 1;
+    }
+    
+    .meta-budget-overview {
+        grid-template-columns: 1fr;
+    }
+}

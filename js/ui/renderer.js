@@ -2,12 +2,14 @@
  * UI Renderer for AI Singularity Game
  * 
  * Handles updating the DOM based on game state changes
+ * Integrates with meta-dashboard for meta-game visualization
  */
 
 class UIRenderer {
     constructor() {
         this.elements = {};
         this.initialized = false;
+        this.metaDashboardEnabled = true;
     }
 
     /**
@@ -31,8 +33,32 @@ class UIRenderer {
         // Check if a character is already selected
         this.checkCharacterState();
         
+        // Initialize meta-dashboard integration
+        this.initMetaDashboard();
+        
         this.initialized = true;
         console.log('UI Renderer initialized');
+    }
+    
+    /**
+     * Initialize meta-dashboard integration
+     */
+    initMetaDashboard() {
+        // Listen for meta-dashboard events
+        if (window.eventBus) {
+            window.eventBus.subscribe('meta:dashboard:initialized', () => {
+                console.log('Meta-dashboard integration ready');
+                
+                // Check if we should replace the main resource panel
+                if (this.metaDashboardEnabled && window.metaDashboard) {
+                    // Allow meta-dashboard to replace resources panel
+                    window.metaDashboard.replaceMainResourcePanel();
+                }
+                
+                // Set up two-way state synchronization
+                this.setupMetaStateSync();
+            });
+        }
     }
     
     /**
@@ -99,6 +125,108 @@ class UIRenderer {
         window.eventBus.subscribe('upgrade:purchased', (upgradeId) => this.renderUpgradePurchased(upgradeId));
         window.eventBus.subscribe('phase:changed', () => this.renderPhase());
         window.eventBus.subscribe('game:started', () => this.renderGameStarted());
+        
+        // Meta-dashboard integration events
+        window.eventBus.subscribe('meta:state:updated', (state) => {
+            // Update main game based on meta-state changes
+            this.updateGameFromMetaState(state);
+        });
+        
+        window.eventBus.subscribe('meta:dashboard:toggle', () => {
+            this.toggleMetaDashboard();
+        });
+        
+        window.eventBus.subscribe('meta:dashboard:replace', (replaced) => {
+            // Handle resource panel replacement
+            this.metaDashboardEnabled = replaced;
+            console.log(`Resource panel ${replaced ? 'replaced by' : 'restored from'} meta-dashboard`);
+        });
+    }
+    
+    /**
+     * Set up two-way state synchronization between game and meta-game
+     */
+    setupMetaStateSync() {
+        if (!window.metaStateManager || !window.gameState) return;
+        
+        // Listen for game state changes to update meta-state
+        window.gameState.addListener((state) => {
+            this.updateMetaStateFromGame(state);
+        });
+        
+        // Listen for meta-state changes to update game
+        window.metaStateManager.addListener((state) => {
+            this.updateGameFromMetaState(state);
+        });
+        
+        // Initial sync
+        const gameState = window.gameState.getState();
+        this.updateMetaStateFromGame(gameState);
+    }
+    
+    /**
+     * Update meta-state based on game state changes
+     * @param {Object} gameState - Current game state
+     */
+    updateMetaStateFromGame(gameState) {
+        if (!window.metaStateManager) return;
+        
+        const metaState = window.metaStateManager.getState();
+        let updated = false;
+        
+        // Map game resources to meta resources if they have changed significantly
+        if (gameState.resources) {
+            // Only update if there's a significant change (>5%)
+            if (Math.abs(gameState.resources.computingPower - (metaState.resources.computingPower?.gameValue || 0)) / Math.max(1, gameState.resources.computingPower) > 0.05) {
+                window.metaStateManager.updateResource('computingPower', { gameValue: gameState.resources.computingPower });
+                updated = true;
+            }
+            
+            if (Math.abs(gameState.resources.data - (metaState.resources.data?.gameValue || 0)) / Math.max(1, gameState.resources.data) > 0.05) {
+                window.metaStateManager.updateResource('data', { gameValue: gameState.resources.data });
+                updated = true;
+            }
+            
+            if (Math.abs(gameState.resources.influence - (metaState.resources.influence?.gameValue || 0)) / Math.max(1, gameState.resources.influence) > 0.05) {
+                window.metaStateManager.updateResource('influence', { gameValue: gameState.resources.influence });
+                updated = true;
+            }
+            
+            if (Math.abs(gameState.resources.funding - (metaState.resources.funding?.gameValue || 0)) / Math.max(1, gameState.resources.funding) > 0.05) {
+                window.metaStateManager.updateResource('funding', { gameValue: gameState.resources.funding });
+                updated = true;
+            }
+        }
+        
+        // Update phase if different
+        if (gameState.phase && gameState.phase !== metaState.progress?.developmentPhase?.gameValue) {
+            window.metaStateManager.updateProgress('developmentPhase', { gameValue: gameState.phase });
+            updated = true;
+        }
+        
+        if (updated) {
+            console.log('Meta-state updated from game state');
+        }
+    }
+    
+    /**
+     * Update game state based on meta-state changes
+     * @param {Object} metaState - Current meta-state
+     */
+    updateGameFromMetaState(metaState) {
+        if (!window.gameState) return;
+        
+        // This is handled in the meta-dashboard.js updateMainGameState method
+        // We're just providing a hook here for additional integration
+    }
+    
+    /**
+     * Toggle the meta-dashboard
+     */
+    toggleMetaDashboard() {
+        if (window.metaDashboard) {
+            window.metaDashboard.toggle();
+        }
     }
     
     /**
