@@ -58,6 +58,7 @@ project/
 │   │   ├── metrics-fetcher.js # Real-world metrics collection
 │   │   ├── claude-metrics-bridge.js # Claude Code metrics integration
 │   │   ├── github-metrics.js # GitHub integration
+│   │   ├── server-bridge.js # Backend server integration
 │   │   └── logger.js     # Enhanced logging system
 │   ├── ui/
 │   │   ├── renderer.js   # UI rendering
@@ -70,11 +71,20 @@ project/
 ├── GAMESTATE.json        # Meta-game state tracking
 ├── index.html            # Main HTML structure
 ├── mcp-server.js         # MCP server implementation
-├── claude-mcp-server.js  # Claude MCP server
+├── claude-mcp-server.js  # Claude MCP server with WebSocket
+├── claude-mcp-server-simple.js # Simple MCP server (no dependencies)
 ├── claude-metrics-simple-server.js # Metrics HTTP server
+├── server-runner.js      # Backend server control panel
+├── server-dashboard/     # Web UI for server runner
 ├── bridge.js             # MCP bridge implementation
 ├── CLAUDE.md             # Claude Code guidance (this file)
 ├── USER_INPUT.md         # User requirements and task tracking
+├── SERVER_RUNNER_README.md # Documentation for server runner
+├── UI_UX_IMPROVEMENTS.md # Documentation for UI/UX improvements
+├── COMMIT_GUIDELINES.md  # Manual task-commit integration
+├── run-servers.sh        # Script to run server control panel
+├── run-metrics-server.sh # Script to run metrics server directly
+├── run-mcp-server.sh     # Script to run MCP server directly
 ├── README.md             # Main project documentation
 ```
 
@@ -150,11 +160,13 @@ The game integrates with the Model Context Protocol (MCP), a standardized way to
 
 The game includes special integration with Claude through multiple mechanisms:
 
-- **claude-mcp-server.js**: Node.js server that creates a WebSocket connection
+- **claude-mcp-server-simple.js**: Simple Node.js server that implements the MCP protocol
 - **claude-client.js**: Browser client that communicates with Claude
 - **claude-metrics-bridge.js**: Integration with Claude Code's OpenTelemetry metrics
 - **claude-metrics-simple-server.js**: HTTP server for metrics collection and distribution
-- **Enhanced Logging**: Claude has access to console logs for debugging
+- **server-runner.js**: Control panel for managing backend servers with web dashboard
+- **server-bridge.js**: In-game interface for controlling and monitoring backend servers
+- **Enhanced Logging**: Claude has access to console logs and server logs for debugging
 - **Meta Capabilities**: Claude can influence the meta-game state directly
 - **Real-time Resource Generation**: Token usage, coding activity, and costs map to in-game resources
 - **Character Role Integration**: Claude plays "The Engineer" role in the meta-game narrative
@@ -177,16 +189,17 @@ Official game: [https://ddisisto.github.io/logoboros/](https://ddisisto.github.i
 
 1. Game initialization: `main.js` → `events.js` → `state.js` → `game.js`
 2. Meta-game initialization: `meta-state.js` loads or creates `GAMESTATE.json`
-3. Metrics systems initialize: `metrics-fetcher.js`, `claude-metrics-bridge.js`, `github-metrics.js`, `todo-commit-system.js`
-4. MCP Interface connects via custom events between `interface.js` and `bridge.js`
-5. Claude metrics connection established to local metrics server
-6. UI updates flow from state changes through the event bus to `renderer.js`
-7. User interactions in `interactions.js` modify state through event bus
-8. Meta-dashboard visualizes meta-game state, budget tracking, and Claude metrics in real-time
-9. Completed todos generate commit suggestions via `todo-commit-system.js`
-10. Claude metrics (tokens, costs, code changes) map directly to game resources
-11. GitHub metrics update influence resource via `github-metrics.js`
-12. Character roles (Visionary/Engineer) provide special bonuses and mechanics
+3. Metrics systems initialize: `metrics-fetcher.js`, `claude-metrics-bridge.js`, `github-metrics.js`
+4. Server bridge initializes and connects to server runner if available
+5. MCP Interface connects via custom events between `interface.js` and `bridge.js`
+6. Claude metrics connection established to local metrics server
+7. UI updates flow from state changes through the event bus to `renderer.js`
+8. User interactions in `interactions.js` modify state through event bus
+9. Meta-dashboard visualizes meta-game state, budget tracking, and Claude metrics in real-time
+10. Server bridge provides controls for backend servers and real-time logs
+11. Claude metrics (tokens, costs, code changes) map directly to game resources
+12. GitHub metrics update influence resource via `github-metrics.js`
+13. Character roles (Visionary/Engineer) provide special bonuses and mechanics
 
 ## Budget and Project Phase Management
 
