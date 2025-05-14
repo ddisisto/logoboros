@@ -280,9 +280,31 @@ class Game {
      * Log a message to the game log
      * @param {string} message - Message to log
      * @param {string} type - Log type (info, warning, error)
+     * @param {Object} metadata - Additional metadata
      */
-    log(message, type = 'info') {
-        window.eventBus.publish('game:log', { message, type, timestamp: new Date() });
+    log(message, type = 'info', metadata = {}) {
+        // Use the new logger if available
+        if (window.gameLogger) {
+            switch (type) {
+                case 'debug':
+                    window.gameLogger.debug(message, { source: 'game', ...metadata });
+                    break;
+                case 'info':
+                    window.gameLogger.info(message, { source: 'game', ...metadata });
+                    break;
+                case 'warning':
+                    window.gameLogger.warning(message, { source: 'game', ...metadata });
+                    break;
+                case 'error':
+                    window.gameLogger.error(message, { source: 'game', ...metadata });
+                    break;
+                default:
+                    window.gameLogger.info(message, { source: 'game', ...metadata });
+            }
+        } else {
+            // Fall back to old method
+            window.eventBus.publish('game:log', { message, type, timestamp: new Date() });
+        }
     }
 }
 

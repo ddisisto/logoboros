@@ -27,6 +27,13 @@ class UserInteractions {
         this.setupMCPConnection();
         this.setupLogDisplay();
         
+        // Check if a character is already selected (e.g., from a saved game)
+        const state = window.gameState.getState();
+        if (state.character) {
+            // If character already selected, start the game
+            this.startGame();
+        }
+        
         this.initialized = true;
         console.log('User interactions initialized');
     }
@@ -110,20 +117,83 @@ class UserInteractions {
                 if (!characterEl) return;
                 
                 const characterId = characterEl.dataset.character;
+                const characterName = characterEl.querySelector('h3').textContent;
                 window.gameState.setCharacter(characterId);
                 window.game.applyCharacterBonuses();
                 
-                window.gameState.addNews(`You have chosen the path of ${characterEl.querySelector('h3').textContent}.`);
+                window.gameState.addNews(`You have chosen the path of ${characterName}.`);
                 
-                // Automatically switch to Main tab after character selection
-                setTimeout(() => {
-                    const mainTabButton = document.querySelector('.tab-button[data-tab="main"]');
-                    if (mainTabButton) {
-                        mainTabButton.click();
-                    }
-                }, 1000); // Small delay to allow the user to see their selection
+                // Update profile panel with character selection
+                this.updateProfileWithCharacter(characterName);
+                
+                // Transition from character selection to game UI
+                this.startGame();
             });
         }
+    }
+    
+    /**
+     * Start the game after character selection
+     */
+    startGame() {
+        // Hide character selection screen
+        const characterSelectionScreen = document.getElementById('character-selection-screen');
+        if (characterSelectionScreen) {
+            characterSelectionScreen.style.display = 'none';
+        }
+        
+        // Show game UI
+        const gameUI = document.getElementById('game-ui');
+        if (gameUI) {
+            gameUI.style.display = 'block';
+        }
+        
+        // Show resources panel
+        const resourcesPanel = document.querySelector('.resources');
+        if (resourcesPanel) {
+            resourcesPanel.style.display = 'block';
+        }
+        
+        // Add a small delay before showing the log display
+        setTimeout(() => {
+            const logDisplay = document.getElementById('log-display');
+            if (logDisplay) {
+                logDisplay.style.display = 'block';
+            }
+        }, 1000);
+        
+        // Publish game started event
+        window.eventBus.publish('game:started', true);
+    }
+    
+    /**
+     * Update profile panel with character selection
+     * @param {string} characterName - The name of the selected character
+     */
+    updateProfileWithCharacter(characterName) {
+        const profileTab = document.getElementById('profile-tab');
+        if (!profileTab) return;
+        
+        // Check if character display already exists
+        let characterDisplay = profileTab.querySelector('.character-display');
+        
+        if (!characterDisplay) {
+            // Create character display element if it doesn't exist
+            characterDisplay = document.createElement('div');
+            characterDisplay.className = 'character-display';
+            
+            // Insert at the top of the profile card
+            const profileCard = profileTab.querySelector('.card');
+            if (profileCard) {
+                profileCard.insertBefore(characterDisplay, profileCard.firstChild);
+            }
+        }
+        
+        // Update the character display content
+        characterDisplay.innerHTML = `
+            <h4>Selected Character</h4>
+            <p>${characterName}</p>
+        `;
     }
 
     /**
@@ -315,29 +385,99 @@ class UserInteractions {
      * Set up log display
      */
     setupLogDisplay() {
-        // Hide the log display element completely
+        // Initially hide the log display element
         const logDisplay = document.getElementById('log-display');
         if (logDisplay) {
             logDisplay.style.display = 'none';
         }
         
-        // Subscribe to log events - only log to console
-        window.eventBus.subscribe('game:log', (logData) => {
-            this.logMessage(logData.message, logData.type);
-        });
+        // Set up toggle button
+        const toggleLogBtn = document.getElementById('toggle-logs');
+        if (toggleLogBtn) {
+            toggleLogBtn.addEventListener('click', () => {
+                if (logDisplay.style.display === 'none') {
+                    logDisplay.style.display = 'block';
+                    toggleLogBtn.textContent = 'Hide';
+                } else {
+                    logDisplay.style.display = 'none';
+                    toggleLogBtn.textContent = 'Show';
+                }
+            });
+        }
         
-        console.log('Log display redirected to console');
+        // Set up clear button
+        const clearLogBtn = document.getElementById('clear-logs');
+        if (clearLogBtn) {
+            clearLogBtn.addEventListener('click', () => {
+                if (window.gameLogger) {
+                    window.gameLogger.clearLogs();
+                } else {
+                    const logContent = document.getElementById('log-content');
+                    if (logContent) {
+                        logContent.innerHTML = '';
+                    }
+                }
+            });
+        }
+        
+        // If we have the new logger, it will handle UI updates directly
+        // Otherwise, fall back to traditional event bus subscription
+        if (!window.gameLogger) {
+            // Subscribe to log events
+            window.eventBus.subscribe('game:log', (logData) => {
+                this.logMessage(logData.message, logData.type);
+            });
+        }
+        
+        console.log('Log display initialized');
     }
 
     /**
-     * Log a message to the game log
+     * Legacy log message method (used if gameLogger is not available)
      * @param {string} message - Message to log
      * @param {string} type - Log type (info, warning, error)
      */
     logMessage(message, type = 'info') {
-        // Log to console only
+        // Check if we have the new logger
+        if (window.gameLogger) {
+            // Use the new logger
+            switch (type) {
+                case 'debug':
+                    window.gameLogger.debug(message, { source: 'ui' });
+                    break;
+                case 'info':
+                    window.gameLogger.info(message, { source: 'ui' });
+                    break;
+                case 'warning':
+                    window.gameLogger.warning(message, { source: 'ui' });
+                    break;
+                case 'error':
+                    window.gameLogger.error(message, { source: 'ui' });
+                    break;
+                default:
+                    window.gameLogger.info(message, { source: 'ui' });
+            }
+            return;
+        }
+        
+        // Legacy logging (if gameLogger not available)
+        // Log to console
         const timestamp = new Date().toLocaleTimeString();
         console.log(`[${timestamp}] [${type.toUpperCase()}] ${message}`);
+        
+        // Log to UI
+        const logContent = document.getElementById('log-content');
+        if (logContent) {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = `<span class="log-time">[${timestamp}]</span> <span class="log-type">[${type.toUpperCase()}]</span> ${message}`;
+            logContent.prepend(logEntry);
+            
+            // Limit log entries
+            while (logContent.children.length > 100) {
+                logContent.removeChild(logContent.lastChild);
+            }
+        }
     }
 }
 
