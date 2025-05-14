@@ -58,7 +58,6 @@ project/
 │   │   ├── metrics-fetcher.js # Real-world metrics collection
 │   │   ├── claude-metrics-bridge.js # Claude Code metrics integration
 │   │   ├── github-metrics.js # GitHub integration
-│   │   ├── todo-commit-system.js # Todo-commit integration
 │   │   └── logger.js     # Enhanced logging system
 │   ├── ui/
 │   │   ├── renderer.js   # UI rendering
@@ -119,7 +118,7 @@ project/
 - **meta-dashboard.js**: Visual representation of meta-game progress
 - **metrics-fetcher.js**: Collects real-world metrics for resource generation
 - **github-metrics.js**: Gathers GitHub repository data for influence calculation
-- **todo-commit-system.js**: Creates feedback loops between planning and implementation
+- **COMMIT_GUIDELINES.md**: Manual process for task-commit integration
 - **Proposals System**: Tracks development initiatives tied to in-game upgrades
 - **Recursive Nature**: The game actively tracks its own development progress as part of the game mechanics
 
@@ -127,11 +126,11 @@ project/
 
 The game implements a self-improving system through several interconnected components:
 
-1. **Task Management**: The TODO system tracks development tasks with priorities and statuses
+1. **Task Management**: USER_INPUT.md tracks development tasks with priorities and statuses
 2. **Metrics Collection**: Real-world metrics from Claude tokens, file counts, and commits map to game resources
 3. **Claude Code Metrics**: Direct integration with Claude Code usage metrics via OpenTelemetry
 4. **GitHub Integration**: Repository activity directly impacts the game's influence resource
-5. **Todo-Commit Integration**: Completed tasks suggest commit messages, creating a planning-implementation loop
+5. **Commit Guidelines**: Manual process for task-commit integration following COMMIT_GUIDELINES.md
 6. **Proposal System**: Development initiatives tied to character classes and upgrades
 7. **Singularity Events**: Triggered by development patterns and milestones
 8. **Budget Tracking**: Project budget constraints translated into game mechanics

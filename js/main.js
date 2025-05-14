@@ -36,9 +36,8 @@ function initGame() {
             window.githubMetrics.init();
         }
         
-        if (window.todoCommitSystem) {
-            window.todoCommitSystem.init();
-        }
+        // TODO: Implement a lightweight task tracking system in the future
+        // Following COMMIT_GUIDELINES.md for now
         
         // Initialize meta-dashboard
         if (window.metaDashboard) {
@@ -68,7 +67,7 @@ window.aiSingularity = {
     metaState: window.metaStateManager,
     metricsFetcher: window.metricsFetcher,
     githubMetrics: window.githubMetrics,
-    todoCommitSystem: window.todoCommitSystem,
+    // todoCommitSystem removed - using manual process with COMMIT_GUIDELINES.md
     metaDashboard: window.metaDashboard
 };
 
